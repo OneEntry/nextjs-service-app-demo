@@ -7,10 +7,12 @@ import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import type { IProductEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { FC } from 'react';
 
+import { useGetPageByIdQuery } from '@/app/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
   addServiceToCart,
   selectServiceId,
+  setTabsState,
 } from '@/app/store/reducers/CartSlice';
 
 interface OfferInfoProps {
@@ -31,18 +33,27 @@ const OfferInfo: FC<OfferInfoProps> = ({ item, dict }) => {
   const dispatch = useAppDispatch();
   const serviceId = useAppSelector(selectServiceId);
 
-  // Function to add service to cart and navigate to booking page
+  const { data: service } = useGetPageByIdQuery({
+    id: item.product.attributeValues.services.value[0].parentId,
+  });
+
+  /**
+   * Function to add service to cart and navigate to booking page
+   * @param product
+   */
   const handleSelect = (product: IProductEntity) => {
     dispatch(
       addServiceToCart({
         id: serviceId,
-        service: {} as IPagesEntity,
+        service,
         product,
         salon: {} as IPagesEntity,
         master: {} as IAdminEntity,
         date: {} as Date,
       }),
     );
+    dispatch(setTabsState({ key: 'services', value: true }));
+    dispatch(setTabsState({ key: 'products', value: true }));
     router.push('/booking');
   };
 

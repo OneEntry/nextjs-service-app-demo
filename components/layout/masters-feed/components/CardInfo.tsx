@@ -11,8 +11,8 @@ interface MasterCardInfoProps {
 
 const MasterCardInfo: FC<MasterCardInfoProps> = ({ dict, master }) => {
   const { id, attributeValues } = master;
-  const name = attributeValues.master_name?.value;
-  const services = attributeValues.services?.value;
+  const name = attributeValues?.master_name?.value;
+  const services = attributeValues?.services?.value;
   const specialization =
     (services !== '' && services?.find((el: any) => el.id > 0)) || [];
   const checkProfileText = dict.check_profile_text?.value;

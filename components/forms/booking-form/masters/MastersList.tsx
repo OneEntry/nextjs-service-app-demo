@@ -10,7 +10,6 @@ import {
   addServiceToCart,
   selectCartData,
   selectServiceId,
-  selectTabsState,
   setTabsData,
 } from '@/app/store/reducers/CartSlice';
 
@@ -29,14 +28,14 @@ const MastersList: FC<MastersListProps> = ({ masters, dict, tabKey }) => {
   const servicesData = useAppSelector(selectCartData);
 
   const serviceData = servicesData[serviceId] || {};
-  const serviceCategoryName = serviceData.service?.localizeInfos?.title || '';
+  const serviceCategory = serviceData.service || {};
   const currentSalon = serviceData?.salon;
   const currentService = serviceData?.service;
   const currentProduct = serviceData?.product;
 
   // filter masters
   const filteredMasters = useMemo(() => {
-    return masters.filter((master) => {
+    return masters?.filter((master) => {
       const {
         services: { value: masterServices },
         master_salon: { value: masterSalon },
@@ -88,16 +87,6 @@ const MastersList: FC<MastersListProps> = ({ masters, dict, tabKey }) => {
     }
   }, [dispatch, filteredMasters, tabKey]);
 
-  // Use selector to get the current tab state
-  const { isActive } = useAppSelector((state) =>
-    selectTabsState(tabKey, state),
-  );
-
-  // if tab inactive
-  if (!isActive) {
-    return;
-  }
-
   // Masters not found
   if (filteredMasters?.length === 0) {
     return (
@@ -119,15 +108,15 @@ const MastersList: FC<MastersListProps> = ({ masters, dict, tabKey }) => {
 
   // render MastersList
   return (
-    <div className="flex w-full flex-col rounded-3xl bg-white p-5 md:px-14">
-      <fieldset id="masters_group" className="w-full">
+    <div className="dropdown-container flex w-full flex-col rounded-3xl bg-white">
+      <fieldset id="masters_group" className="w-full p-5 md:px-14">
         {filteredMasters?.map((master) => (
           <MasterRow
             key={master.id}
             dict={dict}
             master={master}
             currentId={Number(serviceData.master?.id || 0)}
-            serviceCategoryName={serviceCategoryName}
+            serviceCategory={serviceCategory}
             addMasterToCart={addMasterToCart}
           />
         ))}

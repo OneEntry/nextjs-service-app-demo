@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
   addServiceToCart,
   selectServiceId,
+  setTabsState,
 } from '@/app/store/reducers/CartSlice';
 
 const ProductRow: FC<{ pageData: any; product: any; setState: any }> = ({
@@ -33,11 +34,13 @@ const ProductRow: FC<{ pageData: any; product: any; setState: any }> = ({
         master: {} as IAdminEntity,
       }),
     );
+    dispatch(setTabsState({ key: 'products', value: true }));
+    dispatch(setTabsState({ key: 'services', value: true }));
   };
 
   return (
     <Link
-      prefetch={true}
+      prefetch={false}
       href={`/services/${pageData?.pageUrl || ''}`}
       onClick={() => onApplyHandle()}
       className="flex w-full py-2 hover:text-fuchsia-500"

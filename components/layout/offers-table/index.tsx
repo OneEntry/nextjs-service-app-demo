@@ -11,8 +11,10 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
   addServiceToCart,
   selectServiceId,
+  setTabsState,
 } from '@/app/store/reducers/CartSlice';
 
+import TableAnimations from '../products-table/animations/TableAnimations';
 import OfferRow from './components/OfferRow';
 import SectionTitle from './components/SectionTitle';
 
@@ -57,6 +59,8 @@ const OffersTable: FC<{
         master: {} as IAdminEntity,
       }),
     );
+    dispatch(setTabsState({ key: 'products', value: true }));
+    dispatch(setTabsState({ key: 'services', value: true }));
     router.push('/booking');
   };
 
@@ -74,7 +78,7 @@ const OffersTable: FC<{
         className="relative box-border flex shrink-0 flex-col"
       >
         <SectionTitle title={title} color={color} />
-        <div
+        <TableAnimations
           className={
             'rounded-xl border border-solid px-9 py-5 max-md:max-w-full max-sm:px-5'
           }
@@ -82,20 +86,21 @@ const OffersTable: FC<{
         >
           <table className="w-full">
             <tbody>
-              {offers.map((product: IProductEntity, i: number) => {
+              {offers.map((product: IProductEntity, index: number) => {
                 return (
                   <OfferRow
-                    key={i}
+                    key={index}
+                    index={index}
                     product={product}
                     color={color}
                     handleClick={handleClick}
-                    isLast={offers.length === i + 1}
+                    isLast={offers.length === index + 1}
                   />
                 );
               })}
             </tbody>
           </table>
-        </div>
+        </TableAnimations>
       </section>
     );
   });

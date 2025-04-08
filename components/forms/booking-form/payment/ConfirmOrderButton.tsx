@@ -3,7 +3,7 @@ import type { IAccountsEntity } from 'oneentry/dist/payments/paymentsInterfaces'
 import type { FC } from 'react';
 
 import { useCreateOrder } from '@/app/api';
-import Loader from '@/components/shared/Loader';
+import SpinnerLoader from '@/components/shared/SpinnerLoader';
 
 type ConfirmOrderButtonProps = {
   dict: IAttributeValues;
@@ -37,11 +37,11 @@ const ConfirmOrderButton: FC<ConfirmOrderButtonProps> = ({
       onClick={() => {
         onConfirmOrder();
       }}
-      className="btn btn-primary btn-md relative mt-5 px-12 max-md:w-full"
+      className="border-fuchsia-500hover:bg-fuchsia-600 relative mt-5 h-[50px] items-center justify-center rounded-[30px] bg-fuchsia-500 px-8 py-2 text-[17px] font-bold uppercase tracking-wide text-white transition-colors duration-300 focus-visible:outline-fuchsia-600 disabled:bg-[#a8a9b580] disabled:text-neutral-300 max-md:w-full"
       aria-label={title}
       disabled={!isValid}
     >
-      {isLoading ? <Loader /> : title}
+      {isLoading ? <SpinnerLoader /> : title}
     </button>
   );
 };

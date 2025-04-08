@@ -27,7 +27,7 @@ const FormSubmitButton: FC<FormSubmitButtonProps> = ({
       <button
         disabled={isLoading}
         type="submit"
-        className="btn btn-lg btn-primary relative w-full"
+        className="border-fuchsia-500hover:bg-fuchsia-600 relative h-[60px] w-full items-center justify-center rounded-[30px] bg-fuchsia-500 px-10 py-2.5 text-xl font-bold uppercase tracking-wide text-white transition-colors duration-300 focus-visible:outline-fuchsia-600 disabled:bg-[#a8a9b580] disabled:text-neutral-300"
       >
         {isLoading ? <Spinner /> : title}
       </button>

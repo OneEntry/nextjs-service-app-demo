@@ -18,7 +18,7 @@ const OfferBadge: FC<{ product: IProductEntity; color: string }> = ({
       <BadgeIcon color={color} />
       <div
         className={
-          'size-10 justify-center self-center rounded-full px-1 py-2 text-center text-xs font-medium leading-3 text-white '
+          'size-11 justify-center self-center rounded-full px-1 py-2.5 text-center text-xs font-medium leading-3 text-white '
         }
         style={{ backgroundColor: color }}
       >

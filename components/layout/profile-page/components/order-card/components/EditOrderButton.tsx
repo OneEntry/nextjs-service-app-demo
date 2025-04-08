@@ -30,7 +30,7 @@ const EditOrderButton: FC<EditOrderButtonProps> = ({
     <button
       onClick={handleEditOrder}
       type="button"
-      className="btn-o btn-o-primary btn-o-sm"
+      className="h-[40px] min-w-20 items-center justify-center rounded-3xl border border-solid border-fuchsia-500 bg-transparent p-1 text-base font-bold leading-6 tracking-wide text-fuchsia-500 transition-colors duration-300 hover:border-fuchsia-600 hover:text-fuchsia-600 focus-visible:text-fuchsia-600 focus-visible:outline-fuchsia-600 disabled:border-neutral-300 disabled:text-neutral-300"
     >
       {dict.edit_text?.value || 'Edit'}
     </button>

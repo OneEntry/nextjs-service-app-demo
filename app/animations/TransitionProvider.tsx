@@ -16,7 +16,8 @@ export default function TransitionProvider({
 }: {
   children: ReactNode;
 }) {
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
+
   return (
     <TransitionRouter
       auto={true}
@@ -25,18 +26,17 @@ export default function TransitionProvider({
           return;
         }
         const tl = gsap
-          .timeline()
-          .to(window, {
-            duration: 0.5,
+          .timeline({
+            duration: 0.85,
+          })
+          // .to(ref.current, {
+          //   height: ref.current.clientHeight,
+          //   duration: 0.5,
+          // })
+          .set(window, {
             scrollTo: 0,
           })
-          .to(ref.current, {
-            height: (ref.current as HTMLDivElement).clientHeight,
-            duration: 0.85,
-            autoAlpha: 0,
-            delay: -0.5,
-          })
-          .call(next, undefined, 0.75);
+          .call(next, undefined, 0.85);
         return () => {
           tl.kill();
         };
@@ -45,17 +45,17 @@ export default function TransitionProvider({
         if (!ref.current) {
           return;
         }
+
         const tl = gsap
           .timeline()
           .set(ref.current, {
-            height: (ref.current as HTMLDivElement).clientHeight,
+            height: ref.current.clientHeight,
           })
           .to(ref.current, {
             height: 'auto',
-            autoAlpha: 1,
-            duration: 0.45,
+            duration: 0.85,
           })
-          .call(next, undefined, 0.5);
+          .call(next, undefined, 0.85);
 
         return () => {
           tl.kill();
@@ -64,7 +64,7 @@ export default function TransitionProvider({
     >
       <div
         ref={ref}
-        className="relative mt-20 grow transition-transform duration-500 sm:mt-24 lg:mt-32 xl:mt-32 2xl:mt-32"
+        className="relative flex flex-col grow justify-between transition-transform duration-500"
       >
         {children}
       </div>

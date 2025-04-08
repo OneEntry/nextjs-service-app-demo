@@ -10,7 +10,7 @@ import { useAppSelector } from '@/app/store/hooks';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
 
-import Loader from '../shared/Loader';
+import SpinnerLoader from '../shared/SpinnerLoader';
 import ErrorMessage from './inputs/ErrorMessage';
 import FormInput from './inputs/FormInput';
 import FormSubmitButton from './inputs/FormSubmitButton';
@@ -58,11 +58,11 @@ export const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({ dict }) => {
   };
 
   if (!data || isLoading) {
-    return <Loader />;
+    return <SpinnerLoader />;
   }
 
   return (
-    <FormAnimations isLoading={isLoading}>
+    <FormAnimations className={''} isLoading={isLoading} isActive={true}>
       <form
         className="mx-auto flex min-h-[480px] max-w-[350px] flex-col gap-4 text-xl leading-5"
         onSubmit={handleSubmit}

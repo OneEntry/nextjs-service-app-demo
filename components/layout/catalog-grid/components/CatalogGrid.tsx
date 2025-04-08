@@ -17,7 +17,7 @@ const CatalogGrid: FC = async () => {
   }
 
   return pages.map((page: IPagesEntity, i: Key) => {
-    return <CatalogCard item={page} key={i} />;
+    return <CatalogCard item={page} key={i} index={i as number} />;
   });
 };
 

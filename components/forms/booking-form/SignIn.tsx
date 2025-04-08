@@ -4,11 +4,10 @@ import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { FC } from 'react';
 import { useContext } from 'react';
 
-import { useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
-import { selectTabsState } from '@/app/store/reducers/CartSlice';
 import { SignInForm } from '@/components/forms';
 
+import DropdownAnimations from './animations/DropdownAnimations';
 import DropdownButton from './DropdownButton';
 
 interface SignInProps {
@@ -25,11 +24,6 @@ const SignIn: FC<SignInProps> = ({ dict }) => {
   // Safely extract text value with nullish coalescing operator
   const signText = dict.sign_text?.value ?? 'Sign In';
 
-  // Use selector to get the current tab state
-  const { isActive } = useAppSelector((state) =>
-    selectTabsState(tabKey, state),
-  );
-
   // Access authentication status from context
   const { isAuth } = useContext(AuthContext);
 
@@ -37,14 +31,21 @@ const SignIn: FC<SignInProps> = ({ dict }) => {
   if (isAuth) return null;
 
   return (
-    <div className="mb-4 flex w-full flex-col items-center">
+    <DropdownAnimations
+      className="mb-4 flex w-full flex-col items-center"
+      id={tabKey}
+      index={5}
+      tabKey={tabKey}
+    >
       <DropdownButton title={signText} tabKey={tabKey} />
-      {isActive && (
-        <div className="w-full rounded-3xl bg-white p-8 px-14 max-sm:px-8">
-          <SignInForm dict={dict} />
-        </div>
-      )}
-    </div>
+      <div className="dropdown-container w-full rounded-3xl bg-white">
+        <SignInForm
+          className={'p-8 px-14 max-sm:px-8'}
+          dict={dict}
+          isActive={false}
+        />
+      </div>
+    </DropdownAnimations>
   );
 };
 

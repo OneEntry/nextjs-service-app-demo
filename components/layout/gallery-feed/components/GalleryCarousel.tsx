@@ -3,7 +3,7 @@
 
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { CSSProperties, FC, HTMLAttributes, Key } from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Carousel from 'react-simply-carousel';
 
 import NavigationButton from '@/components/shared/NavigationButton';
@@ -19,25 +19,7 @@ const GalleryFeedCarousel: FC<{ cards: any; dict: IAttributeValues }> = ({
   dict,
 }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [slidesCount, setSlidesCount] = useState(6);
-  const [state, setState] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      const currWidth = window.innerWidth;
-      if (currWidth <= 1200) {
-        setSlidesCount(5);
-      }
-      if (currWidth <= 991) {
-        setSlidesCount(4);
-      }
-      if (currWidth <= 768) {
-        setSlidesCount(3);
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const [state, setState] = useState<boolean>(false);
 
   const containerProps = {
     style: {
@@ -69,7 +51,7 @@ const GalleryFeedCarousel: FC<{ cards: any; dict: IAttributeValues }> = ({
           ...arrowStyle,
           right: 20,
         },
-        className: 'group',
+        className: 'group arrow',
       }}
       backwardBtnProps={{
         children: <NavigationButton direction="left" />,
@@ -77,17 +59,25 @@ const GalleryFeedCarousel: FC<{ cards: any; dict: IAttributeValues }> = ({
           ...arrowStyle,
           left: 20,
         },
-        className: 'group',
+        className: 'group arrow',
       }}
       activeSlideIndex={currentIndex}
       onRequestChange={setCurrentIndex}
-      itemsToShow={slidesCount}
+      itemsToShow={6}
       centerMode={true}
       speed={500}
-      autoplay={!state}
+      autoplay={state}
       autoplayDelay={2500}
       easing="ease-in-out"
-      preventScrollOnSwipe
+      // preventScrollOnSwipe={true}
+      responsiveProps={[
+        { minWidth: 1360, itemsToShow: 6 },
+        { minWidth: 1200, maxWidth: 1359, itemsToShow: 5 },
+        { minWidth: 992, maxWidth: 1199, itemsToShow: 4 },
+        { minWidth: 768, maxWidth: 992, itemsToShow: 3 },
+        { maxWidth: 767, itemsToShow: 3 },
+      ]}
+      // persistentChangeCallbacks
     >
       {cards?.map((cardData: any, index: Key) => {
         return (
@@ -96,6 +86,8 @@ const GalleryFeedCarousel: FC<{ cards: any; dict: IAttributeValues }> = ({
             dict={dict}
             cardData={cardData}
             setState={setState}
+            index={index as number}
+            setCurrentIndex={setCurrentIndex}
           />
         );
       })}

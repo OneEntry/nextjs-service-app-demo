@@ -6,9 +6,11 @@ import { api } from '@/app/api';
 import { typeError } from '@/components/utils';
 
 interface HandleProps {
+  body: any[];
   offset: number;
   limit: number;
 }
+
 /**
  * Get a single attribute with data from the attribute sets.
  *
@@ -19,6 +21,7 @@ interface HandleProps {
  * @returns SingleAttribute|Error object.
  */
 export const getAdminsInfo = async ({
+  body,
   offset,
   limit,
 }: HandleProps): Promise<{
@@ -27,7 +30,7 @@ export const getAdminsInfo = async ({
   admins?: IAdminEntity[];
 }> => {
   try {
-    const data = await api.Admins.getAdminsInfo('en_US', offset, limit);
+    const data = await api.Admins.getAdminsInfo(body, 'en_US', offset, limit);
     if (typeError(data)) {
       return { isError: true, error: data as IError };
     } else {

@@ -1,14 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import type { FC } from 'react';
+import type { Dispatch, FC, SetStateAction } from 'react';
 
 import { orderStates } from '@/components/data';
 
-const OrderStateSelect: FC<{ orderState: any; setOrderState: any }> = ({
-  orderState,
-  setOrderState,
-}) => {
+const OrderStateSelect: FC<{
+  orderState: string;
+  setOrderState: Dispatch<SetStateAction<string>>;
+}> = ({ orderState, setOrderState }) => {
   return (
     <select
       onChange={(e) => {

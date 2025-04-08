@@ -8,11 +8,15 @@ import ProfilePage from '@/components/layout/profile-page';
 import AuthError from '@/components/pages/AuthError';
 import GradientLine from '@/components/shared/GradientLine';
 
+/**
+ * ProfilePageLayout
+ * @returns ProfilePage
+ */
 const ProfilePageLayout: FC = async () => {
   const [dict] = ServerProvider('dict', await getDictionary());
   const { page, isError } = await getPageByUrl('profile');
   // masters
-  const { admins } = await getAdminsInfo({ offset: 0, limit: 100 });
+  const { admins } = await getAdminsInfo({ body: [], offset: 0, limit: 100 });
   const masters = admins?.filter(
     (master: IAdminEntity) => master.attributeValues?.master_name && master,
   );

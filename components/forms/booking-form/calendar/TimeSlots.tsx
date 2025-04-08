@@ -2,7 +2,7 @@ import type { Dispatch, FC, SetStateAction } from 'react';
 
 import TimeSlot from './TimeSlot';
 
-interface TimeSlotData {
+export interface TimeSlotData {
   time: string;
   isSelected?: boolean;
   isDisabled?: boolean;
@@ -26,7 +26,7 @@ const TimeSlots: FC<TimeSlotsProps> = ({ timeSlots, currentTime, setTime }) => {
   return (
     <div className="flex w-full flex-col gap-4 whitespace-nowrap text-base font-bold tracking-wide">
       <div className="grid grid-cols-4 flex-wrap justify-around gap-x-1 gap-y-3">
-        {timeSlots.map((slot) => (
+        {timeSlots?.map((slot) => (
           <TimeSlot
             key={slot.time}
             slot={slot}

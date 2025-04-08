@@ -6,6 +6,8 @@ import type { FC } from 'react';
 
 import StarsGroup from '@/components/shared/StarsGroup';
 
+import CardAnimations from '../../animations/CardAnimations';
+
 interface ProfileHistoryProps {
   attributeValues: IAttributeValues;
 }
@@ -16,7 +18,7 @@ const MasterCard: FC<ProfileHistoryProps> = ({ attributeValues }) => {
   const masterRating = attributeValues?.master_rating?.value;
 
   return (
-    <div className="flex flex-col self-stretch">
+    <CardAnimations className="flex flex-col self-stretch" index={0}>
       {imgSrc && (
         <Image
           width={160}
@@ -36,7 +38,7 @@ const MasterCard: FC<ProfileHistoryProps> = ({ attributeValues }) => {
       <div className="mb-2">
         <StarsGroup rating={masterRating} size={16} />
       </div>
-    </div>
+    </CardAnimations>
   );
 };
 

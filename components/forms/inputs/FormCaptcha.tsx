@@ -26,19 +26,23 @@ const FormCaptcha = ({ setToken, setIsCaptcha, captchaKey }: Props) => {
   }, []);
 
   const handleLoaded = () => {
-    window.grecaptcha?.enterprise.ready(() => {
-      window.grecaptcha?.enterprise
-        .execute(testKey, { action: 'homepage' })
-        .then((token: string) => {
-          const validationObject = {
-            event: {
-              token,
-              siteKey: testKey,
-            },
-          };
-          validateRecaptcha(validationObject);
-        });
-    });
+    if (!window) {
+      return;
+    }
+
+    // window.grecaptcha?.enterprise.ready(() => {
+    //   window.grecaptcha?.enterprise
+    //     .execute(testKey, { action: 'homepage' })
+    //     .then((token: string) => {
+    //       const validationObject = {
+    //         event: {
+    //           token,
+    //           siteKey: testKey,
+    //         },
+    //       };
+    //       validateRecaptcha(validationObject);
+    //     });
+    // });
   };
 
   const validateRecaptcha = async (validationObject: {
@@ -48,6 +52,7 @@ const FormCaptcha = ({ setToken, setIsCaptcha, captchaKey }: Props) => {
     await fetch(url, { method: 'post', body: JSON.stringify(validationObject) })
       .then((response) => response.json())
       .then((data) => {
+        // eslint-disable-next-line no-console
         console.log('validation result', data);
       });
   };

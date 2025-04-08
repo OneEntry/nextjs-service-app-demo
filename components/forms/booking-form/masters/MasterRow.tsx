@@ -10,24 +10,27 @@ import MasterRowImage from './MasterRowImage';
 interface MasterRowProps {
   dict: IAttributeValues;
   master: IAdminEntity;
-  serviceCategoryName: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  serviceCategory: any;
   currentId: number;
   addMasterToCart: (master: IAdminEntity) => void;
 }
 
 /**
  * MasterRow
+ *
  * @param dict
  * @param master
- * @param serviceCategoryName
+ * @param serviceCategoryId
  * @param currentId
  * @param addMasterToCart
+ *
  * @returns MasterRow
  */
 const MasterRow: FC<MasterRowProps> = ({
   dict,
   master,
-  serviceCategoryName,
+  serviceCategory,
   currentId,
   addMasterToCart,
 }) => {
@@ -35,13 +38,13 @@ const MasterRow: FC<MasterRowProps> = ({
     <label
       htmlFor={`radio-${master.id}`}
       onClick={() => addMasterToCart(master)}
-      className="card-label flex w-full cursor-pointer items-start justify-between gap-5 rounded-2xl border border-transparent pr-2.5 transition-colors duration-300 hover:border-fuchsia-500"
+      className="dropdown-item card-label flex w-full cursor-pointer items-start justify-between gap-5 rounded-2xl border border-transparent pr-2.5 transition-colors duration-300 hover:border-fuchsia-500"
     >
       <MasterRowImage master={master} />
       <MasterRowData
         dict={dict}
         master={master}
-        serviceCategoryName={serviceCategoryName}
+        serviceCategory={serviceCategory}
         currentId={currentId}
       />
     </label>

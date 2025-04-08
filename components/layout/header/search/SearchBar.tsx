@@ -1,7 +1,6 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { FC, FormEvent } from 'react';
 import React, { Suspense, useState } from 'react';
 import { useDebounce } from 'use-debounce';
@@ -16,13 +15,11 @@ import SearchResults from './SearchResults';
  *
  * @returns JSX.Element
  */
-const SearchBar: FC<{ dict: IAttributeValues }> = ({ dict }) => {
+const SearchBar: FC<{ placeholder: string }> = ({ placeholder }) => {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const pathname = usePathname();
   const router = useRouter();
-
-  const { search_placeholder } = dict;
 
   const [isSearchActive, setIsSearchActive] = useState(false);
 
@@ -47,24 +44,24 @@ const SearchBar: FC<{ dict: IAttributeValues }> = ({ dict }) => {
   };
 
   return (
-    <div className="fade-in relative text-neutral-600 max-2xl:hidden">
+    <div className="relative text-neutral-600 max-2xl:hidden">
       <form className="flex w-full" onSubmit={handleSubmit}>
         <button
           type="submit"
           className="group relative m-auto box-border flex shrink-0 flex-col p-2.5"
         >
-          <span className="sr-only">{search_placeholder?.value}</span>
+          <span className="sr-only">{placeholder}</span>
           <SearchIcon />
         </button>
         <input
           defaultValue={debouncedValue}
           onChange={(e) => handleSearch(e.target.value)}
           type="search"
-          placeholder={search_placeholder?.value}
+          placeholder={placeholder}
           id="searchInput"
           name="quick-search"
           className="my-auto h-[25px] w-[210px] rounded-xl border border-solid border-gray-200 px-2.5 text-neutral-400 outline-none transition-colors duration-300 ease-in-out focus:border-none focus:outline-none focus:ring-1 focus:ring-fuchsia-500"
-          aria-label={search_placeholder?.value || 'Search'}
+          aria-label={placeholder}
         />
       </form>
       <Suspense fallback={'...'}>

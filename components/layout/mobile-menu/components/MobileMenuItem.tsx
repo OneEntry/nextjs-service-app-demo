@@ -25,14 +25,10 @@ function MobileMenuItem({
   // check if item has child
   const hasChild = Array.isArray(item.children) && item.children.length > 0;
   const [openSubmenu, setOpenSubmenu] = useState(false);
-  let url = '';
-  if (item.pageUrl === 'home') {
-    url = '/';
-  } else if (parentUrl) {
-    url = parentUrl + '/' + item.pageUrl;
-  } else {
-    url = item.pageUrl;
-  }
+  const url =
+    item.pageUrl === 'home'
+      ? '/'
+      : `${parentUrl ? `${parentUrl}/` : '/'}${item.pageUrl || ''}`;
 
   return (
     <li
@@ -46,8 +42,7 @@ function MobileMenuItem({
           className="w-full"
           href={url}
           prefetch={true}
-          onClick={(e) => {
-            e.stopPropagation();
+          onClick={() => {
             setOpen(false);
           }}
         >
@@ -57,7 +52,6 @@ function MobileMenuItem({
           <button
             onClick={(e) => {
               e.preventDefault();
-              e.stopPropagation();
               setOpenSubmenu(!openSubmenu);
             }}
             className={

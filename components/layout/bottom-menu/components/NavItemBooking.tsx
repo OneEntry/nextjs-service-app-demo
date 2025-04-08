@@ -16,7 +16,7 @@ const NavItemBooking: FC<{ item: IMenusPages }> = ({ item }) => {
 
   return (
     <Link
-      prefetch={true}
+      prefetch={false}
       href={'/' + pageUrl}
       title={localizeInfos.menuTitle}
       className="group relative box-border flex size-6 shrink-0 flex-col"

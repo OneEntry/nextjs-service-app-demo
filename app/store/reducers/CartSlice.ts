@@ -107,9 +107,6 @@ export const cartSlice = createSlice({
     removeAllServices(state) {
       state.servicesData = initialState.servicesData;
     },
-    setCartTransition(state, action: PayloadAction<{ productId: number }>) {
-      state.transitionId = action.payload.productId;
-    },
     setCartVersion(state, action: PayloadAction<number>) {
       state.version = action.payload;
     },
@@ -141,22 +138,10 @@ export const cartSlice = createSlice({
 export const {
   addServiceToCart,
   removeAllServices,
-  setCartTransition,
   setCartVersion,
   setTabsState,
   setTabsData,
 } = cartSlice.actions;
-
-/**
- * Get transition - get product id for animations
- * @param state slice state
- * @returns transitionId
- */
-export const getTransition = (state: {
-  cartReducer: {
-    transitionId: number;
-  };
-}) => state.cartReducer;
 
 /**
  * Select cart data

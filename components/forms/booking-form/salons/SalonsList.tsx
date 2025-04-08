@@ -12,7 +12,6 @@ import {
   selectCartData,
   selectServiceId,
   selectTabsData,
-  selectTabsState,
   setTabsData,
 } from '@/app/store/reducers/CartSlice';
 
@@ -31,11 +30,6 @@ export type TabLayoutProps = {
  */
 const SalonsList: FC<TabLayoutProps> = ({ salons, tabKey }) => {
   const dispatch = useAppDispatch();
-
-  // get the current tab state
-  const { isActive } = useAppSelector((state) =>
-    selectTabsState(tabKey, state),
-  );
 
   // servicesData in cart
   const serviceId = useAppSelector(selectServiceId);
@@ -91,11 +85,6 @@ const SalonsList: FC<TabLayoutProps> = ({ salons, tabKey }) => {
     }
   }, [dispatch, filteredSalons, tabKey]);
 
-  // if tab inactive
-  if (!isActive) {
-    return;
-  }
-
   // Salons not found
   if (filteredSalons?.length === 0) {
     return (
@@ -107,30 +96,22 @@ const SalonsList: FC<TabLayoutProps> = ({ salons, tabKey }) => {
 
   // add salon ToCart, reset other data if selected salon disabled
   const addSalonToCart = (salon: IPagesEntity, disabled: boolean) => {
-    if (disabled) {
-      dispatch(
-        addServiceToCart({
-          id: serviceId,
-          salon,
-          service: {} as IPagesEntity,
-          master: {} as IAdminEntity,
-          product: {} as IProductEntity,
-        }),
-      );
-    } else {
-      dispatch(
-        addServiceToCart({
-          id: serviceId,
-          salon,
-        }),
-      );
-    }
+    const payload = {
+      id: serviceId,
+      salon,
+      ...(disabled && {
+        service: {} as IPagesEntity,
+        master: {} as IAdminEntity,
+        product: {} as IProductEntity,
+      }),
+    };
+    dispatch(addServiceToCart(payload));
   };
 
   // render salons list
   return (
-    <ul className="flex w-full flex-col overflow-hidden rounded-3xl bg-white px-4 text-center text-sm leading-7 text-neutral-600">
-      {salons?.map((salon) => {
+    <ul className="dropdown-container flex w-full flex-col overflow-hidden rounded-3xl bg-white px-4 text-center text-sm leading-7 text-neutral-600">
+      {salons?.map((salon, index) => {
         const isActive =
           filteredSalons?.some(
             (filteredSalon) => filteredSalon.id === salon.id,
@@ -143,6 +124,7 @@ const SalonsList: FC<TabLayoutProps> = ({ salons, tabKey }) => {
             currentId={servicesData[serviceId]?.salon?.id ?? 0}
             disabled={!isActive}
             addSalonToCart={addSalonToCart}
+            index={index}
           />
         );
       })}

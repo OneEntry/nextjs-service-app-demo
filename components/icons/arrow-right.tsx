@@ -1,6 +1,8 @@
-const ArrowRightIcon = (props?: { active?: boolean }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ArrowRightIcon = (props: { active?: boolean; ref?: any }) => {
   return (
     <svg
+      ref={props.ref}
       width="27"
       height="45"
       viewBox="0 0 27 45"

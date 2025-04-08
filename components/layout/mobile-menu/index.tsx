@@ -34,7 +34,7 @@ const OffscreenModal: FC<{
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 768) {
+      if (window.innerWidth > 1023) {
         setOpen(false);
       }
     };
@@ -53,9 +53,9 @@ const OffscreenModal: FC<{
   return (
     <MobileMenuAnimations
       id="modalBody"
-      className="z-450 fixed left-1/2 top-1/2 flex size-full -translate-x-1/2 -translate-y-1/2 flex-col overflow-auto p-6 pt-12 shadow-xl md:overflow-hidden md:rounded-3xl lg:h-auto lg:w-[360px] lg:p-10"
+      className="z-450 fixed flex size-full flex-col overflow-auto p-6 pt-12 shadow-xl md:overflow-hidden md:rounded-3xl lg:h-auto lg:w-[360px] lg:p-10"
     >
-      <div className="fixed inset-0 z-50 flex size-full max-w-[420px] flex-col bg-white pb-6">
+      <div className="fixed inset-0 z-50 flex size-full max-w-[360px] flex-col bg-white pb-6">
         <div className="p-6">
           <CloseModal />
           <div className="mb-4 w-full">

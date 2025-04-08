@@ -48,7 +48,7 @@ const NavItemProfile: FC<NavItemProfileProps> = ({ userMenu }) => {
 
   return (
     <Link
-      prefetch={true}
+      prefetch={false}
       href="/profile"
       className="group relative my-auto box-border flex size-6 shrink-0"
       aria-label="Profile"

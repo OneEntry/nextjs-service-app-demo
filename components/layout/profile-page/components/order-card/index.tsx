@@ -7,6 +7,7 @@ import { getPageById } from '@/app/api';
 import AddressCard from '@/components/shared/AddressCard';
 import { typeError } from '@/components/utils';
 
+import CardAnimations from '../../animations/CardAnimations';
 import OrderButtonsGroup from './components/OrderButtonsGroup';
 import OrderDateTime from './components/OrderDateTime';
 import OrderProductTitle from './components/OrderProductTitle';
@@ -17,6 +18,7 @@ interface OrderCardProps {
   master?: IAdminEntity;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setRefetch: any;
+  index: number;
 }
 
 async function fetchSalon(salonId: number) {
@@ -33,7 +35,13 @@ async function fetchSalon(salonId: number) {
   }
 }
 
-const OrderCard: FC<OrderCardProps> = ({ dict, order, master, setRefetch }) => {
+const OrderCard: FC<OrderCardProps> = ({
+  dict,
+  order,
+  master,
+  setRefetch,
+  index,
+}) => {
   const [salonAddress, setSalonAddress] = useState<string>('');
   const salonEntity = order.formData.find((el) => el.marker === 'order_salon');
   const salonId = salonEntity?.value[0].id;
@@ -47,6 +55,7 @@ const OrderCard: FC<OrderCardProps> = ({ dict, order, master, setRefetch }) => {
             result.data.page?.attributeValues.salon_address.value,
           );
         } else {
+          // eslint-disable-next-line no-console
           console.error('Failed to fetch salon data:', result.error);
         }
       });
@@ -54,7 +63,10 @@ const OrderCard: FC<OrderCardProps> = ({ dict, order, master, setRefetch }) => {
   }, [salonId]);
 
   return (
-    <div className="flex gap-5 rounded-2xl border border-solid border-fuchsia-500 px-4 py-3">
+    <CardAnimations
+      className="flex gap-5 rounded-2xl border border-solid border-fuchsia-500 px-4 py-3"
+      index={index}
+    >
       <div className="flex w-[65%] grow flex-col text-base leading-8">
         <div>
           <h4 className="text-neutral-600">{salonTitle}</h4>
@@ -70,7 +82,7 @@ const OrderCard: FC<OrderCardProps> = ({ dict, order, master, setRefetch }) => {
         master={master}
         setRefetch={setRefetch}
       />
-    </div>
+    </CardAnimations>
   );
 };
 

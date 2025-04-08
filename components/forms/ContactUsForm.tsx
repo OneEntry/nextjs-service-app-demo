@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { api, useGetFormByMarkerQuery } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 
-import Loader from '../shared/Loader';
+import SpinnerLoader from '../shared/SpinnerLoader';
 import ErrorMessage from './inputs/ErrorMessage';
 import FormCaptcha from './inputs/FormCaptcha';
 import FormInput from './inputs/FormInput';
@@ -81,7 +81,7 @@ const ContactUsForm: FC<{ className: string }> = ({ className }) => {
   };
 
   if (isLoading) {
-    return <Loader />;
+    return <SpinnerLoader />;
   }
 
   return (

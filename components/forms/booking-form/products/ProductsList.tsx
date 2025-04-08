@@ -9,8 +9,6 @@ import {
   addServiceToCart,
   selectCartData,
   selectServiceId,
-  selectTabsData,
-  selectTabsState,
   setTabsData,
 } from '@/app/store/reducers/CartSlice';
 
@@ -19,52 +17,68 @@ import ProductRow from './ProductRow';
 
 /**
  * ProductsList
+ * @param tabKey
  * @returns ProductsList
  */
-const ProductsList: FC<{ tabKey: string }> = ({ tabKey }) => {
+const ProductsList: FC<{ tabKey: string; salons: any }> = ({
+  tabKey,
+  salons,
+}) => {
   const dispatch = useAppDispatch();
 
   const serviceId = useAppSelector(selectServiceId);
   const servicesData = useAppSelector(selectCartData);
-  const mastersData = useAppSelector((state) =>
-    selectTabsData('masters', state),
-  );
+  const serviceData = servicesData[serviceId];
 
-  const serviceData = servicesData[serviceId] || {};
-  const serviceUrl = serviceData.service?.pageUrl;
-  const currentSalon = serviceData?.salon;
-
-  const { data } = useGetProductsByPageUrlQuery({ url: serviceUrl || '' });
-  const { data: allProducts } = useGetProductsQuery([]);
+  const { data } = useGetProductsByPageUrlQuery({
+    url: serviceData.service?.pageUrl || '',
+  });
+  const { data: allProducts } = useGetProductsQuery({ body: [] });
 
   // filter products
   const filteredProducts = useMemo(() => {
     const productsData = data?.items || allProducts?.items;
     if (!productsData) return [];
     // inMastersProducts
-    const inMastersProducts = mastersData
-      ?.flatMap((m: any) => m.attributeValues?.services?.value)
-      .filter((m: any) => {
-        if (m.id > 0) {
-          return false;
-        }
-        return true;
-      })
-      .map((m: any) => Number(m.id?.replace('p-' + m.parentId + '-', '')));
+    const inMastersProducts =
+      serviceData?.master?.attributeValues?.services?.value
+        .filter((m: any) => {
+          if (m.id > 0) {
+            return false;
+          }
+          return true;
+        })
+        .map((m: any) => Number(m.id?.replace('p-' + m.parentId + '-', '')));
 
     return productsData.filter((product) => {
       // check if product in salon
-      const salons = product.attributeValues?.salons?.value || [];
-      const inSalon = salons.some(
-        (salon: { id: number }) =>
-          salon.id === currentSalon?.id || currentSalon?.id === undefined,
-      );
-      const inMaster = inMastersProducts.some((pId: any) => pId === product.id);
+      const inSalon = salons.some((salon: any) => {
+        if (
+          salon.id === serviceData?.salon?.id ||
+          serviceData?.salon?.id === undefined
+        ) {
+          const pIds = salon.attributeValues?.products.value
+            ?.map((m: any) =>
+              typeof m.id === 'string'
+                ? Number(m.id?.replace('p-' + m.parentId + '-', ''))
+                : m.id,
+            )
+            .find((pId: any) => pId === product.id);
+          return pIds;
+        }
+      });
+
+      // check if product in Master
+      const inMaster =
+        inMastersProducts?.length > 0
+          ? inMastersProducts.some((pId: any) => pId === product.id)
+          : true;
+
       return inSalon && inMaster;
     });
-  }, [mastersData, allProducts, data, currentSalon]);
+  }, [data, allProducts, serviceData, salons]);
 
-  // setTabsData
+  // Add tabs data to cartSlice
   useEffect(() => {
     if (filteredProducts) {
       dispatch(
@@ -76,26 +90,7 @@ const ProductsList: FC<{ tabKey: string }> = ({ tabKey }) => {
     }
   }, [dispatch, filteredProducts, tabKey]);
 
-  // Use selector to get the current tab state
-  const { isActive } = useAppSelector((state) =>
-    selectTabsState(tabKey, state),
-  );
-
-  // if tab inactive
-  if (!isActive) {
-    return;
-  }
-
-  // Products not found
-  if (filteredProducts.length === 0) {
-    return (
-      <div className="flex w-full flex-col overflow-hidden rounded-3xl bg-white px-4 text-center text-sm leading-7 text-neutral-600">
-        <NotFound message="Products not found" />
-      </div>
-    );
-  }
-
-  // Add product to cart
+  // Add service to cart
   const addProductToCart = (product: IProductEntity) => {
     dispatch(
       addServiceToCart({
@@ -107,15 +102,22 @@ const ProductsList: FC<{ tabKey: string }> = ({ tabKey }) => {
 
   // render ProductsList
   return (
-    <ul className="flex w-full flex-col overflow-hidden rounded-3xl bg-white px-4 text-center text-sm leading-7 text-neutral-600">
-      {filteredProducts?.map((product) => (
-        <ProductRow
-          key={product.id}
-          product={product}
-          currentId={serviceData.product?.id ?? -1}
-          addProductToCart={addProductToCart}
-        />
-      ))}
+    <ul className="dropdown-container flex w-full flex-col overflow-hidden rounded-3xl bg-white px-4 text-center text-sm leading-7 text-neutral-600">
+      {filteredProducts?.length > 0 ? (
+        filteredProducts.map((product, index) => (
+          <ProductRow
+            key={product.id}
+            product={product}
+            currentId={serviceData.product?.id ?? -1}
+            index={index}
+            addProductToCart={addProductToCart}
+          />
+        ))
+      ) : (
+        <div className="flex w-full flex-col overflow-hidden rounded-3xl bg-white px-4 text-center text-sm leading-7 text-neutral-600">
+          <NotFound message="Products not found" />
+        </div>
+      )}
     </ul>
   );
 };

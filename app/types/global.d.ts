@@ -7,14 +7,14 @@ declare type LocalizeInfo = {
   title: string;
 };
 
-declare type PageProps = {
+declare type PageProps = Promise<{
   params: { page: string; handle: string };
   searchParams?: {
     search?: string;
     page?: string;
     filters?: IFilterParams[];
   };
-};
+}>;
 
 declare type SimplePageProps = {
   page?: IPagesEntity;
@@ -42,7 +42,7 @@ export type AnimationsProps = {
   index: number;
 };
 
-export type FormProps = { dict: IAttributeValues };
+export type FormProps = { dict: IAttributeValues; className: string };
 
 declare type TabLayoutProps = {
   dict: IAttributeValues;

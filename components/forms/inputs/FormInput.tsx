@@ -1,4 +1,3 @@
-/* eslint-disable tailwindcss/no-custom-classname */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { IAttributes } from 'oneentry/dist/base/utils';
 import type { FC, Key } from 'react';

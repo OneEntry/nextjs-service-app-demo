@@ -43,12 +43,14 @@ const ProfileHistory: FC<ProfileHistoryProps> = ({
     if (!isAuth) return;
     const { isError, error, orders } = await getAllOrdersByMarker({
       marker: 'orders',
-      limit: pageLimit,
       offset: currentPage * pageLimit,
+      limit: pageLimit,
     });
+
     if (orders && !isError) {
       setOrders(orders.filter((order) => order.statusIdentifier === eventType));
     } else if (isError) {
+      // eslint-disable-next-line no-console
       console.error(error);
     }
     setRefetch(false);
@@ -105,6 +107,7 @@ const ProfileHistory: FC<ProfileHistoryProps> = ({
                 return (
                   <OrderCard
                     key={i}
+                    index={i as number}
                     dict={dict}
                     order={order}
                     master={masterData}

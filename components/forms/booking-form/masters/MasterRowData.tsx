@@ -11,7 +11,8 @@ interface MasterRowProps {
   dict: IAttributeValues;
   master: IAdminEntity;
   currentId: number;
-  serviceCategoryName: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  serviceCategory: any;
 }
 
 /**
@@ -19,14 +20,14 @@ interface MasterRowProps {
  * @param dict
  * @param master
  * @param currentId
- * @param serviceCategoryName
+ * @param serviceCategory
  * @returns MasterRowData
  */
 const MasterRowData: FC<MasterRowProps> = ({
   dict,
   master,
   currentId,
-  serviceCategoryName,
+  serviceCategory,
 }) => {
   const { check_profile_text } = dict;
   const { id, attributeValues } = master;
@@ -36,7 +37,9 @@ const MasterRowData: FC<MasterRowProps> = ({
   const name = master_name?.value ?? '';
   const rating = master_rating?.value ?? 0;
   const desc = master_short_description?.value ?? '';
-  const link = `/masters/${id}?service=${serviceCategoryName.toLowerCase().replace(/\s/g, '_')}`;
+
+  const serviceCategoryName = serviceCategory.localizeInfos?.title || '';
+  const link = `/masters/${id}?service=${serviceCategory.id || ''}`;
 
   return (
     <div className="mt-3 flex w-[calc(100%_-_135px)] flex-col justify-start">

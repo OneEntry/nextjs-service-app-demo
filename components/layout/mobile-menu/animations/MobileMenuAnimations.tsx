@@ -52,7 +52,7 @@ const MobileMenuAnimations: FC<{
           autoAlpha: 1,
         })
         .to('#modalBody', {
-          xPercent: -50,
+          xPercent: 0,
           autoAlpha: 1,
         })
         .to('#modalBg', {

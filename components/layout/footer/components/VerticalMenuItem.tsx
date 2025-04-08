@@ -25,7 +25,7 @@ const MenuItem: FC<MenuItemProps> = ({ page, baseUrl }) => {
   return (
     <li className="relative box-border">
       <Link
-        prefetch={true}
+        prefetch={false}
         className={
           'focus:outline-none hover:text-fuchsia-500 transition-colors ' +
           (isActive ? 'text-fuchsia-500' : '')

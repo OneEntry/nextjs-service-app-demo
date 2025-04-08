@@ -76,7 +76,6 @@ const SearchResults: FC<SearchResultsProps> = ({
     <div className="absolute left-0 top-full z-30 mt-px flex w-full flex-col gap-1 rounded-2xl bg-white p-5 shadow-lg">
       <CloseSearch setState={setState} />
       {products.length > 0 ? (
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         products.map((product: IProductEntity, i: number) => {
           const { id, attributeSetIdentifier } = product;
 

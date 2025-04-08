@@ -46,10 +46,12 @@ const VerificationForm: FC<FormProps> = ({ dict }) => {
   const handleVerification = async () => {
     try {
       if (action !== 'activateUser') {
-        // checkCode
+        // !!! checkCode
         const result = await api.AuthProvider.checkCode(
           'email',
           fields.email_reg.value,
+          // eventIdentifier,
+          'auth',
           otp,
         );
         if (result) setComponent('ResetPasswordForm');
@@ -109,7 +111,7 @@ const VerificationForm: FC<FormProps> = ({ dict }) => {
   }, [fields.email_reg.value]);
 
   return (
-    <FormAnimations isLoading={isLoading}>
+    <FormAnimations className={''} isLoading={isLoading} isActive={true}>
       <form
         className="mx-auto flex min-h-full w-full max-w-[430px] flex-col gap-4 text-xl leading-5"
         onSubmit={onSubmitHandle}

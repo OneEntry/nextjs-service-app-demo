@@ -11,7 +11,6 @@ import NavigationMenu from './components/NavigationMenu';
  * @async
  * @returns JSX.Element representing the main navigation menu or a loading/error state.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MainMenu: FC<{ menu: IMenusEntity }> = async ({ menu }) => {
   if (!menu?.pages) {
     return <MainMenuLoader limit={4} />;

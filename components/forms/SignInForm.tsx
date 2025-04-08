@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
-import type { IAttributes } from 'oneentry/dist/base/utils';
-import type { FC, FormEvent, Key } from 'react';
+import type { IAttributeValues } from 'oneentry/dist/base/utils';
+import type { FC, FormEvent } from 'react';
 import { useContext, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -11,7 +10,6 @@ import { logInUser, useGetFormByMarkerQuery } from '@/app/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { AuthContext } from '@/app/store/providers/AuthContext';
 import { OpenDrawerContext } from '@/app/store/providers/OpenDrawerContext';
-import type { FormProps } from '@/app/types/global';
 import FormAnimations from '@/components/forms/animations/FormAnimations';
 import FormFieldAnimations from '@/components/forms/animations/FormFieldAnimations';
 
@@ -26,7 +24,11 @@ import ResetPasswordButton from './inputs/ResetPasswordButton';
  * @param dict dictionary from server api
  * @returns SignIn form
  */
-const SignInForm: FC<FormProps> = ({ dict }) => {
+const SignInForm: FC<{
+  dict: IAttributeValues;
+  className: string;
+  isActive: boolean;
+}> = ({ dict, className, isActive }) => {
   const { authenticate } = useContext(AuthContext);
   const { setOpen } = useContext(OpenDrawerContext);
 
@@ -39,8 +41,6 @@ const SignInForm: FC<FormProps> = ({ dict }) => {
     forgot_password_text,
     create_account_text,
     sign_in_text,
-    email_text,
-    phone_text,
   } = dict;
 
   // Get form by marker with RTK
@@ -96,7 +96,11 @@ const SignInForm: FC<FormProps> = ({ dict }) => {
   };
 
   return (
-    <FormAnimations isLoading={isLoading || !formFields}>
+    <FormAnimations
+      isLoading={isLoading || !formFields}
+      className={className}
+      isActive={isActive}
+    >
       <form
         className="relative mx-auto mb-6 mt-2 box-border flex shrink-0 flex-col gap-3"
         onSubmit={onSignIn}

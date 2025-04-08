@@ -10,8 +10,10 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
   addServiceToCart,
   selectServiceId,
+  setTabsState,
 } from '@/app/store/reducers/CartSlice';
 
+import TableAnimations from './animations/TableAnimations';
 import ProductRow from './components/ProductRow';
 import SectionTitle from './components/SectionTitle';
 
@@ -47,13 +49,15 @@ const ProductsTable: FC<ProductsTableProps> = ({
         master: {} as IAdminEntity,
       }),
     );
+    dispatch(setTabsState({ key: 'products', value: true }));
+    dispatch(setTabsState({ key: 'services', value: true }));
     router.push('/booking');
   };
 
   return (
     <section className="relative box-border flex shrink-0 flex-col">
       <SectionTitle title={title} />
-      <div
+      <TableAnimations
         className={
           'rounded-xl px-9 max-sm:px-4 py-5 max-md:max-w-full border border-solid border-' +
           color
@@ -67,6 +71,7 @@ const ProductsTable: FC<ProductsTableProps> = ({
                   key={index}
                   product={product}
                   color={color}
+                  index={index}
                   clickHandle={clickHandle}
                   isLast={filteredProducts.length === index + 1}
                 />
@@ -74,7 +79,7 @@ const ProductsTable: FC<ProductsTableProps> = ({
             </tbody>
           </table>
         )}
-      </div>
+      </TableAnimations>
     </section>
   );
 };

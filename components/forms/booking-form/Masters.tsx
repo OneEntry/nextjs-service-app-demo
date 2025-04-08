@@ -4,6 +4,7 @@ import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { FC } from 'react';
 
+import DropdownAnimations from './animations/DropdownAnimations';
 import DropdownButton from './DropdownButton';
 import MastersList from './masters/MastersList';
 
@@ -24,10 +25,15 @@ const MastersLayout: FC<MastersLayoutProps> = ({ masters, dict }) => {
   const selectMasterText = dict.select_master_text?.value ?? 'Select Master';
 
   return (
-    <div id={tabKey} className="mb-4 flex w-full flex-col items-center">
+    <DropdownAnimations
+      id={tabKey}
+      className="mb-4 flex w-full flex-col items-center"
+      index={3}
+      tabKey={tabKey}
+    >
       <DropdownButton title={selectMasterText} tabKey={tabKey} />
       <MastersList dict={dict} masters={masters} tabKey={tabKey} />
-    </div>
+    </DropdownAnimations>
   );
 };
 

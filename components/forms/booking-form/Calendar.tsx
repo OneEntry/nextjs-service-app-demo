@@ -14,11 +14,13 @@ import Calendar from 'react-calendar';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
   addServiceToCart,
+  selectCartData,
   selectServiceId,
-  selectTabsState,
 } from '@/app/store/reducers/CartSlice';
-import CalendarAnimations from '@/components/forms/animations/CalendarAnimations';
+import CalendarAnimations from '@/components/forms/booking-form/animations/CalendarAnimations';
 
+import DropdownAnimations from './animations/DropdownAnimations';
+import type { TimeSlotData } from './calendar/TimeSlots';
 import TimeSlots from './calendar/TimeSlots';
 import DropdownButton from './DropdownButton';
 
@@ -27,42 +29,66 @@ dayjs.extend(dayOfYear);
 
 interface CalendarLayoutProps {
   dict: IAttributeValues;
-  formData: any;
 }
 
-const tabKey = 'calendar';
+const filterIntervalsByDate = (
+  intervals: [string, string][],
+  targetDate: Date,
+): [string, string][] => {
+  const startOfDay = new Date(targetDate);
+  startOfDay.setUTCHours(0, 0, 0, 0);
 
-const CalendarLayout: FC<CalendarLayoutProps> = ({ dict, formData }) => {
+  const endOfDay = new Date(targetDate);
+  endOfDay.setUTCHours(23, 59, 59, 999);
+  return intervals?.filter(([start, end]) => {
+    const intervalStart = new Date(start).getTime();
+    const intervalEnd = new Date(end).getTime();
+    return (
+      intervalStart <= endOfDay.getTime() && intervalEnd >= startOfDay.getTime()
+    );
+  });
+};
+
+/**
+ * Calendar layout
+ * @param dict
+ * @returns
+ */
+const CalendarLayout: FC<CalendarLayoutProps> = ({ dict }) => {
+  const tabKey = 'calendar';
   const dispatch = useAppDispatch();
   const [date, setDate] = useState<Date>(new Date());
   const [time, setTime] = useState<string>('');
   const [dateTime, setDateTime] = useState<Date>();
 
   const { select_date_time_text } = dict;
-  const tabsState = useAppSelector((state) => selectTabsState(tabKey, state));
   const serviceId = useAppSelector(selectServiceId);
 
-  const holidays = formData?.attributes[0].localizeInfos.intervals
-    .flatMap((interval: any) => interval.external)
-    .map((h: any) => dayjs(h.date).dayOfYear());
+  const servicesData = useAppSelector(selectCartData);
+  const master = servicesData[serviceId].master || {};
+  const schedule = master?.attributeValues?.master_schedule?.value[0].values;
 
-  const intervals = formData?.attributes[0].localizeInfos.intervals
-    .filter(
-      (interval: any) =>
-        date.getMonth() + 1 === interval.fullMonth &&
-        date.getFullYear() === interval.selectedYear,
-    )
-    .flatMap((interval: any) =>
-      interval.intervals.flatMap((int: any) => {
-        const count = int.end.hours - int.start.hours + 1;
-        return Array.from({ length: count }, (_, i) => ({
-          time: `${int.start.hours + i}:${int.start.minutes === 0 ? '00' : int.start.minutes}`,
-          isDisabled: false,
-          isSelected: false,
-        }));
-      }),
-    );
+  const holidays = schedule
+    ?.flatMap((interval: any) => interval.external)
+    .filter((h: any) => h && dayjs(h.date).dayOfYear());
 
+  const timeIntervals = filterIntervalsByDate(
+    schedule?.flatMap((interval: any) => interval.timeIntervals),
+    date,
+  )
+    ?.map((interval: any) => {
+      const d = dayjs(interval[0]).toDate();
+      return `${d.getUTCHours()}:${d.getUTCMinutes() === 0 ? '00' : d.getUTCMinutes()}`;
+    })
+    ?.map((time: any) => {
+      return {
+        time: time,
+        isDisabled: false,
+        isSelected: false,
+      };
+    });
+
+  // setDateTime
   useEffect(() => {
     const [hh, mm] = time.split(':').map(Number);
     setDateTime(
@@ -74,6 +100,7 @@ const CalendarLayout: FC<CalendarLayoutProps> = ({ dict, formData }) => {
     );
   }, [date, time]);
 
+  // addServiceToCart
   useEffect(() => {
     if (dateTime) {
       dispatch(addServiceToCart({ id: serviceId, date: dateTime }));
@@ -81,40 +108,37 @@ const CalendarLayout: FC<CalendarLayoutProps> = ({ dict, formData }) => {
   }, [dispatch, serviceId, dateTime]);
 
   return (
-    <div id={tabKey} className="mb-4 flex w-full flex-col items-center">
+    <DropdownAnimations
+      id={tabKey}
+      className="mb-4 flex w-full flex-col items-center"
+      index={4}
+      tabKey={tabKey}
+    >
       <DropdownButton title={select_date_time_text?.value} tabKey={tabKey} />
-      {tabsState.isActive && (
-        <section className="flex w-full flex-col whitespace-nowrap rounded-3xl bg-white px-8 py-9 text-xl text-neutral-700 max-sm:px-5">
-          <CalendarAnimations className="mx-auto max-w-[350px] max-sm:max-w-[300px]">
-            <Calendar
-              locale="en"
-              view="month"
-              onChange={(value) => setDate(value as Date)}
-              value={date}
-              tileDisabled={({ date }) =>
-                holidays.includes(dayjs(date).dayOfYear())
-              }
-            />
+      <section className="dropdown-container flex w-full flex-col whitespace-nowrap rounded-3xl bg-white px-8 text-xl text-neutral-700 max-sm:px-5">
+        <CalendarAnimations
+          className="mx-auto max-w-[350px] py-9 max-sm:max-w-[300px]"
+          tabKey={tabKey}
+        >
+          <Calendar
+            locale="en"
+            view="month"
+            onChange={(value) => setDate(value as Date)}
+            value={date}
+            tileDisabled={({ date }) =>
+              holidays?.includes(dayjs(date).dayOfYear())
+            }
+          />
+          {timeIntervals && (
             <TimeSlots
-              timeSlots={intervals}
+              timeSlots={timeIntervals as TimeSlotData[]}
               currentTime={time}
               setTime={setTime}
             />
-            {/* Uncomment and implement if needed
-            <div className="mt-10 flex w-full">
-              <button
-                onClick={onApplyHandle}
-                type="button"
-                className="btn btn-primary btn-md mx-auto mt-auto w-[270px]"
-              >
-                {apply_text?.value}
-              </button>
-            </div>
-            */}
-          </CalendarAnimations>
-        </section>
-      )}
-    </div>
+          )}
+        </CalendarAnimations>
+      </section>
+    </DropdownAnimations>
   );
 };
 

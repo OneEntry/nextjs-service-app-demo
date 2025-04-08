@@ -113,7 +113,7 @@ const SignUpForm: FC<FormProps> = ({ dict }) => {
   );
 
   return (
-    <FormAnimations isLoading={isLoading}>
+    <FormAnimations className={''} isLoading={isLoading} isActive={true}>
       <form
         onSubmit={onSignUp}
         className="mx-auto flex min-h-full w-full max-w-[430px] flex-col gap-4 text-xl leading-5"

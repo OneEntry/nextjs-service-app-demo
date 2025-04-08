@@ -12,7 +12,7 @@ const Placeholder: FC<{ className?: string }> = ({ className }) => {
   return (
     <div
       className={
-        'relative flex size-full flex-col items-center justify-center overflow-hidden rounded-xl bg-slate-50 ' +
+        'relative flex size-full flex-col items-center justify-center overflow-hidden rounded-xl bg-slate-100 ' +
         className
       }
     >

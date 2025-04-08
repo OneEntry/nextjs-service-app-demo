@@ -17,6 +17,7 @@ import GradientLine from '@/components/shared/GradientLine';
 
 /**
  * Generate page metadata
+ *
  * @async server component
  * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  * @param params page params
@@ -25,8 +26,9 @@ import GradientLine from '@/components/shared/GradientLine';
 export async function generateMetadata(): Promise<Metadata> {
   // get page by Url
   const { page, isError } = await getPageByUrl('masters');
+
   if (isError || !page) {
-    return notFound();
+    return {};
   }
 
   // extract data from page
@@ -40,18 +42,21 @@ export async function generateMetadata(): Promise<Metadata> {
     },
   };
 }
+
 /**
  * MastersPageLayout
  *
- * @returns
+ * @returns MastersPage
  */
 const MastersPageLayout: FC = async () => {
-  const [dict] = ServerProvider('dict', await getDictionary());
+  // set dict
+  ServerProvider('dict', await getDictionary());
+  // get page
   const { page, isError } = await getPageByUrl('masters');
-  const { admins } = await getAdminsInfo({ offset: 0, limit: 100 });
+  const { admins } = await getAdminsInfo({ body: [], offset: 0, limit: 100 });
 
   if (!page || isError || !admins) {
-    return;
+    return notFound();
   }
   const masters = admins?.filter(
     (master: IAdminEntity) => master.attributeValues?.master_name && master,
@@ -83,7 +88,7 @@ const MastersPageLayout: FC = async () => {
   return (
     <div className="flex flex-col">
       <GradientLine />
-      <MastersGrid dict={dict} mastersData={mastersData} />
+      <MastersGrid mastersData={mastersData} />
     </div>
   );
 };

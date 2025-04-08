@@ -33,7 +33,7 @@ const NavItemProfile: FC<{ item: IMenusPages }> = ({ item }) => {
     </button>
   ) : (
     <Link
-      prefetch={true}
+      prefetch={false}
       href={'/profile'}
       title={title}
       className="group relative box-border flex size-6 shrink-0"

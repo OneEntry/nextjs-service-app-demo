@@ -22,7 +22,6 @@ const DropdownButton: FC<DropdownButtonProps> = ({ title, tabKey }) => {
   const { isActive, disabled } = useAppSelector((state) =>
     selectTabsState(tabKey, state),
   );
-
   // Function to toggle the tab's active state
   const toggleTabState = () => {
     if (!disabled) {
@@ -32,7 +31,7 @@ const DropdownButton: FC<DropdownButtonProps> = ({ title, tabKey }) => {
 
   return (
     <button
-      className="btn-o btn-o-white mb-4"
+      className="mb-4 flex w-full items-center justify-center gap-2 text-nowrap rounded-[30px] border border-solid border-white bg-transparent px-16 py-2.5 text-center text-lg text-white transition-colors duration-300 hover:border-opacity-0 hover:bg-white hover:bg-opacity-30 focus-visible:text-[#fff8ff] focus-visible:outline-[#fff8ff] disabled:border-neutral-300 disabled:text-neutral-300"
       onClick={(e) => {
         e.preventDefault();
         toggleTabState();

@@ -23,6 +23,7 @@ const SpecialistImage: FC<SpecialistImageProps> = ({ item }) => {
           fill
           src={imageSrc}
           alt={title}
+          loading="lazy"
           sizes="(min-width: 600px) 50vw, 100vw"
           className="aspect-[0.86] size-full object-cover transition-transform duration-500 group-hover:scale-125"
         />

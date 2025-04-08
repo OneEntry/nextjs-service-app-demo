@@ -1,8 +1,15 @@
 import type { FC } from 'react';
 
-const GradientLine: FC = async () => {
+import LineAnimations from '@/app/animations/LineAnimations';
+
+const GradientLine: FC<{ className?: string }> = async ({
+  className = 'h-[50px] sm:h-[60px] lg:h-[80px] xl:h-[90px] 2xl:h-[100px]',
+}) => {
   return (
-    <div className="bg-gradient-1 h-[50px] sm:h-[60px] lg:h-[80px] xl:h-[90px] 2xl:h-[100px]"></div>
+    <LineAnimations
+      className={'bg-gradient-1 ' + className}
+      delay={0}
+    ></LineAnimations>
   );
 };
 

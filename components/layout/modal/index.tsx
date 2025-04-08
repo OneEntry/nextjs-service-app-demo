@@ -66,8 +66,11 @@ const Modal: FC<{ dict: IAttributeValues }> = ({ dict }) => {
   const { component } = useContext(OpenDrawerContext);
 
   // select form component by component name
-  const Form: FC<{ className: string; dict: IAttributeValues }> =
-    forms[component as keyof typeof forms] || null;
+  const Form: FC<{
+    className: string;
+    dict: IAttributeValues;
+    isActive: boolean;
+  }> = forms[component as keyof typeof forms] || null;
 
   const title = useTitleData({ dict, component });
 
@@ -87,7 +90,7 @@ const Modal: FC<{ dict: IAttributeValues }> = ({ dict }) => {
           </div>
           <CloseModal />
         </header>
-        <Form className={''} dict={dict} />
+        <Form className={''} dict={dict} isActive={true} />
       </div>
       <ModalBackdrop />
     </ModalAnimations>

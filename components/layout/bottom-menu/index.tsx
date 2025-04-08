@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
 import type { FC } from 'react';

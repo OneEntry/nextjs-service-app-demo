@@ -1,22 +1,20 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
-import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
-import type { FC } from 'react';
+import { Suspense } from 'react';
 
-import {
-  getAdminsInfo,
-  getChildPagesByParentUrl,
-  getPageByUrl,
-} from '@/app/api';
+import LineAnimations from '@/app/animations/LineAnimations';
+import { getPageByUrl } from '@/app/api';
+import { getDictionary } from '@/app/api/utils/dictionaries';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
-import GalleryGrid from '@/components/layout/gallery-grid';
+import Gallery from '@/components/layout/gallery-grid';
+import GalleryGridLoader from '@/components/layout/gallery-grid/components/GalleryGridLoader';
 
-import { getDictionary } from '../../api/utils/dictionaries';
+type PageProps = Promise<{
+  handle: string;
+}>;
 
 /**
  * Generate page metadata
+ *
  * @async server component
  * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  * @param params page params
@@ -25,14 +23,14 @@ import { getDictionary } from '../../api/utils/dictionaries';
 export async function generateMetadata({
   params,
 }: {
-  params: { handle: string };
+  params: PageProps;
 }): Promise<Metadata> {
   const { handle } = await params;
   // get page by Url
   const { page, isError } = await getPageByUrl(handle);
 
   if (isError || !page) {
-    return notFound();
+    return {};
   }
 
   // extract data from page
@@ -47,31 +45,27 @@ export async function generateMetadata({
   };
 }
 
-const GallerySingleLayout: FC<{
-  params: { handle: string };
-}> = async ({ params }) => {
+/**
+ * GallerySingleLayout
+ * @param params
+ * @returns GalleryGrid
+ */
+export default async function GallerySingleLayout({
+  params,
+}: {
+  params: PageProps;
+}) {
   const { handle } = await params;
   const [dict] = ServerProvider('dict', await getDictionary());
-  const { page, isError } = await getPageByUrl(handle);
-  const { pages: childPages } = await getChildPagesByParentUrl(handle);
-  const { admins } = await getAdminsInfo({ offset: 0, limit: 100 });
-  const masters = admins?.filter(
-    (master: IAdminEntity) => master.attributeValues.master_name && master,
+
+  return (
+    <section className="flex min-h-[50vh] w-full flex-col justify-center">
+      <div className="mx-auto flex w-full flex-col">
+        <LineAnimations className="gradient-bg-line-20" delay={0} />
+        <Suspense fallback={<GalleryGridLoader handle={handle} />}>
+          <Gallery dict={dict} handle={handle} />
+        </Suspense>
+      </div>
+    </section>
   );
-
-  if (!page || isError) {
-    return;
-  }
-
-  const data =
-    childPages?.map((page: IPagesEntity) => {
-      return {
-        masterId: page?.attributeValues?.master_id.value?.[0]?.value,
-        photos: page?.attributeValues?.gallery_photos?.value,
-      };
-    }) || [];
-
-  return <GalleryGrid dict={dict} page={page} masters={masters} data={data} />;
-};
-
-export default GallerySingleLayout;
+}

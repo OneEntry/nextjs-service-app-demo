@@ -1,15 +1,16 @@
 import Link from 'next/link';
 import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
-import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { FC } from 'react';
 
+import CardAnimations from '@/app/animations/CardAnimations';
+import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import StarsGroup from '@/components/shared/StarsGroup';
 
 import SpecialistImage from './SpecialistImage';
 
 interface SpecialistCardProps {
-  dict: IAttributeValues;
   item: IAdminEntity;
+  index: number;
   specialization: {
     id: string;
     title: string;
@@ -18,17 +19,19 @@ interface SpecialistCardProps {
 }
 
 /**
- * SpecialistCard
- * @param dict
+ * Specialist Card
+ *
  * @param item
+ * @param index
  * @param specialization
  * @returns SpecialistCard
  */
-const SpecialistCard: FC<SpecialistCardProps> = ({
-  dict,
+const SpecialistCard: FC<SpecialistCardProps> = async ({
   item,
+  index,
   specialization,
 }) => {
+  const [dict] = ServerProvider('dict');
   const { check_profile_text } = dict;
   const { id, attributeValues } = item;
   const { master_name, master_rating } = attributeValues;
@@ -38,7 +41,7 @@ const SpecialistCard: FC<SpecialistCardProps> = ({
   const link = '/masters/' + id + '?service=' + specialization.id;
 
   return (
-    <div className="specialist-card group relative">
+    <CardAnimations className="group relative w-[240px]" index={index}>
       <SpecialistImage item={item} />
       <div className="flex items-center justify-between gap-2 px-3 py-4">
         <div className="my-auto flex flex-col justify-between gap-2">
@@ -64,7 +67,7 @@ const SpecialistCard: FC<SpecialistCardProps> = ({
           title={title}
         ></Link>
       </div>
-    </div>
+    </CardAnimations>
   );
 };
 

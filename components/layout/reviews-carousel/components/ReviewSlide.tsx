@@ -10,11 +10,16 @@ interface ReviewItem {
   rating: number;
 }
 
-const ReviewSlide: FC<{ item: ReviewItem }> = ({ item }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ReviewSlide: FC<{ item: ReviewItem; setState: any }> = ({
+  item,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setState,
+}) => {
   const { title, text, rating } = item;
 
   return (
-    <div className="relative box-border flex w-[980px] max-w-full flex-col pb-7 max-lg:w-[75vw]">
+    <div className="slide relative box-border flex w-[940px] max-w-full flex-col pb-7 max-lg:w-[75vw]">
       <div className="relative mx-auto mt-5 box-border h-auto text-center max-sm:mb-2.5">
         <h3 className="bg-white text-start text-xl font-bold not-italic text-neutral-600">
           {title}

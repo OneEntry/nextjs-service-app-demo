@@ -13,19 +13,19 @@ interface MasterImageProps {
  * @returns JSX.Element representing the MasterImage component or null if no image source is provided.
  */
 const MasterImage: FC<MasterImageProps> = ({ imageSrc, alt }) => {
-  if (!imageSrc) return null;
+  if (!imageSrc) {
+    return null;
+  }
 
   return (
-    <figure className="mb-8 overflow-hidden rounded-3xl max-sm:h-64">
-      <Image
-        width={398}
-        height={464}
-        loading="lazy"
-        src={imageSrc}
-        alt={alt}
-        className="aspect-[0.88] size-full object-cover"
-      />
-    </figure>
+    <Image
+      width={398}
+      height={464}
+      loading="lazy"
+      src={imageSrc}
+      alt={alt}
+      className="aspect-[0.88] size-full object-cover"
+    />
   );
 };
 

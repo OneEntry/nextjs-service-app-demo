@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { type FC } from 'react';
 
 import { getPageByUrl, getProductsByPageUrl } from '@/app/api';
 import { getDictionary } from '@/app/api/utils/dictionaries';
@@ -8,6 +7,10 @@ import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import OffersTable from '@/components/layout/offers-table';
 import ProductsTable from '@/components/layout/products-table';
 import ServiceHero from '@/components/layout/service-hero';
+
+type PageProps = Promise<{
+  handle: string;
+}>;
 
 /**
  * Generate page metadata
@@ -19,13 +22,16 @@ import ServiceHero from '@/components/layout/service-hero';
 export async function generateMetadata({
   params,
 }: {
-  params: { handle: string };
+  params: PageProps;
 }): Promise<Metadata> {
   // get page by Url
   const { handle } = await params;
+
+  // get page by Url
   const { page, isError } = await getPageByUrl(handle);
+
   if (isError || !page) {
-    return notFound();
+    return {};
   }
 
   // extract data from page
@@ -40,11 +46,21 @@ export async function generateMetadata({
   };
 }
 
-const ServicePageLayout: FC<{
-  params: { handle: string };
-}> = async ({ params }) => {
+/**
+ * Service page layout
+ *
+ * @param params
+ * @returns ServicePage
+ */
+export default async function ServicePageLayout({
+  params,
+}: {
+  params: PageProps;
+}) {
   const { handle } = await params;
+
   ServerProvider('dict', await getDictionary());
+
   const { page, isError } = await getPageByUrl(handle);
   const { products } = await getProductsByPageUrl({
     limit: 100,
@@ -53,7 +69,7 @@ const ServicePageLayout: FC<{
   });
 
   if (!page || isError || !products) {
-    return 'isError';
+    return notFound();
   }
 
   return (
@@ -71,6 +87,4 @@ const ServicePageLayout: FC<{
       </div>
     </>
   );
-};
-
-export default ServicePageLayout;
+}

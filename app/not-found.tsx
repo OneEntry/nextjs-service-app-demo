@@ -31,7 +31,10 @@ const NotFound = async () => {
       <p className="mb-4">
         {attributeValues?.error_description?.value[0]?.plainValue}
       </p>
-      <Link href="/" className="btn btn-o btn-sm btn-o-primary">
+      <Link
+        href="/"
+        className="items-center justify-center rounded-[30px] border border-solid border-fuchsia-500 bg-transparent px-3.5 py-1 text-base font-bold uppercase tracking-wide text-fuchsia-500 transition-colors duration-300 hover:border-fuchsia-600 hover:text-fuchsia-600 focus-visible:text-fuchsia-600 focus-visible:outline-fuchsia-600 disabled:border-neutral-300 disabled:bg-[#a8a9b580] disabled:text-neutral-300"
+      >
         Return home
       </Link>
     </div>

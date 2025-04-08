@@ -117,7 +117,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (!user?.state.cart || cartVersion > 0) {
       return;
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     // user.state.cart?.forEach((product: any) => {
     //   dispatch(addServiceToCart(product));
     // });

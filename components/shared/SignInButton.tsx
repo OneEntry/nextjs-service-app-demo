@@ -22,7 +22,7 @@ const SignInButton: FC<{ dict: IAttributeValues }> = ({ dict }) => {
         setComponent('SignInForm');
       }}
       type="button"
-      className="btn btn-sm btn-o btn-o-primary mx-auto w-auto"
+      className="mx-auto w-auto items-center justify-center rounded-[30px] border border-solid border-fuchsia-500 bg-transparent px-3.5 py-1 text-base font-bold uppercase tracking-wide text-fuchsia-500 transition-colors duration-300 hover:border-fuchsia-600 hover:text-fuchsia-600 focus-visible:text-fuchsia-600 focus-visible:outline-fuchsia-600 disabled:border-neutral-300 disabled:bg-[#a8a9b580] disabled:text-neutral-300"
     >
       {log_in_text?.value}
     </button>

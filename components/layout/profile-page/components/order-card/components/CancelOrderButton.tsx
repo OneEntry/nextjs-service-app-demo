@@ -57,7 +57,7 @@ const CancelOrderButton: FC<CancelOrderButtonProps> = ({
     <button
       onClick={cancelOrderHandle}
       type="button"
-      className="btn-o btn-o-gray btn-o-sm"
+      className="h-[40px] min-w-20 items-center justify-center rounded-3xl border border-solid border-neutral-400 bg-transparent p-1 text-base font-bold leading-6 tracking-wide text-neutral-400 transition-colors duration-300 hover:border-neutral-400 hover:text-neutral-400 focus-visible:text-neutral-400 focus-visible:outline-neutral-400 disabled:border-neutral-300 disabled:text-neutral-300"
     >
       {cancel_text?.value || 'Cancel'}
     </button>

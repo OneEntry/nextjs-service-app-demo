@@ -18,7 +18,7 @@ interface UserMenuItemProps {
  */
 const UserMenuItem: FC<UserMenuItemProps> = ({ page, setState }) => (
   <Link
-    prefetch={true}
+    prefetch={false}
     href={`/${page.pageUrl}`}
     title={page.localizeInfos.menuTitle}
     className="group relative box-border flex p-2 text-slate-800 hover:text-fuchsia-500"

@@ -1,6 +1,8 @@
-const ArrowLeftIcon = (props?: { active?: boolean }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ArrowLeftIcon = (props: { active?: boolean; ref?: any }) => {
   return (
     <svg
+      ref={props.ref}
       width="27"
       height="45"
       viewBox="0 0 27 45"
@@ -8,7 +10,7 @@ const ArrowLeftIcon = (props?: { active?: boolean }) => {
       xmlns="http://www.w3.org/2000/svg"
       className={
         'size-full group-hover:stroke-fuchsia-500 transition-colors duration-300 ' +
-        (props?.active ? 'stroke-fuchsia-500' : 'stroke-[#B0BCCE]')
+        (props.active ? 'stroke-fuchsia-500' : 'stroke-[#B0BCCE]')
       }
     >
       <path

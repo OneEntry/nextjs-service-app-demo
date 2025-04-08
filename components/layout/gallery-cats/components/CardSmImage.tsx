@@ -15,15 +15,15 @@ const CardSmImage: FC<CardSmImageProps> = ({
   },
 }) => {
   return (
-    <figure className="relative h-[280px] shrink-0">
-      {previewLink && (
+    <figure className="relative h-[280px] shrink-0 bg-slate-100">
+      {(downloadLink || previewLink) && (
         <Image
-          fill
-          sizes="(min-width: 600px) 50vw, 100vw"
+          width={320}
+          height={480}
           loading="lazy"
-          src={downloadLink || previewLink}
+          src={(previewLink as string) || (downloadLink as string)}
           alt={title}
-          className="size-full self-center object-cover transition-transform duration-500 group-hover:scale-125"
+          className="size-full self-center h-[320px] object-cover transition-transform duration-500 group-hover:scale-125"
         />
       )}
     </figure>

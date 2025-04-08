@@ -21,7 +21,7 @@ const SalonsGrid: FC = async () => {
     };
   });
 
-  return contactsData.map(
+  return contactsData?.map(
     (
       item: {
         title: string;

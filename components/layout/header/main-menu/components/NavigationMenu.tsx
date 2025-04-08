@@ -1,8 +1,8 @@
-/* eslint-disable tailwindcss/no-custom-classname */
 import Link from 'next/link';
 import type { IMenusPages } from 'oneentry/dist/menus/menusInterfaces';
-import type { FC } from 'react';
+import { type FC } from 'react';
 
+// import MenuAnimations from '../../animations/MenuAnimations';
 import NavigationMenuItem from './NavigationMenuItem';
 
 interface MainMenuProps {
@@ -26,11 +26,11 @@ const NavigationMenu: FC<MainMenuProps> = ({ menu }) => {
               hasDropdown={Boolean(item.children)}
             />
             {Array.isArray(item.children) && (
-              <ul className="fixed z-50 hidden flex-col rounded-b-2xl bg-white p-6 leading-8 shadow-lg group-hover:flex">
+              <ul className="fixed z-50 flex-col hidden overflow-hidden rounded-b-2xl bg-white p-6 leading-8 shadow-lg group-hover:flex">
                 {item.children.map((child, childIndex) => (
-                  <li key={childIndex} className="px-4">
+                  <li key={childIndex} className="menu-item px-4">
                     <Link
-                      prefetch={true}
+                      prefetch={false}
                       href={`/${item.pageUrl}/${child.pageUrl}`}
                       className="flex w-full py-2 uppercase text-neutral-500 transition-colors duration-300 ease-in-out hover:text-fuchsia-500 focus:text-fuchsia-500 focus:outline-none"
                     >

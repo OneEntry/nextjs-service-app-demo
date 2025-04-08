@@ -6,9 +6,17 @@ import type { FC } from 'react';
 interface ProductRowProps {
   currentId: number;
   product: IProductEntity;
+  index: number;
   addProductToCart: (product: IProductEntity) => void;
 }
 
+/**
+ * ProductRow
+ * @param currentId
+ * @param product
+ * @param addProductToCart
+ * @returns ProductRow
+ */
 const ProductRow: FC<ProductRowProps> = ({
   currentId,
   product,
@@ -36,10 +44,10 @@ const ProductRow: FC<ProductRowProps> = ({
     : 'text-gray-400';
 
   return (
-    <li className="flex border-b border-b-[#d9dae1]">
+    <div className="dropdown-item flex border-b border-b-[#d9dae1]">
       <button
         onClick={() => addProductToCart(product)}
-        className={`dropdown-submenu-btn flex justify-between ${textColorClass}`}
+        className={`flex w-full justify-between py-2 hover:text-fuchsia-500 focus:text-fuchsia-500 ${textColorClass}`}
       >
         <span className="text-left">{title}</span>
         <span className="flex flex-row gap-3 self-stretch">
@@ -51,7 +59,7 @@ const ProductRow: FC<ProductRowProps> = ({
           <div className="whitespace-nowrap">{price} $</div>
         </span>
       </button>
-    </li>
+    </div>
   );
 };
 

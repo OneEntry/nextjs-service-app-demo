@@ -4,6 +4,7 @@ import type { IProductEntity } from 'oneentry/dist/products/productsInterfaces';
 import type { FC } from 'react';
 import { useMemo } from 'react';
 
+import TableRowAnimations from '../animations/TableRowAnimations';
 import ProductBadge from './ProductBadge';
 import ProductPrice from './ProductPrice';
 import ProductTitle from './ProductTitle';
@@ -14,7 +15,8 @@ const ProductRow: FC<{
   isLast: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   clickHandle: any;
-}> = ({ product, color, isLast, clickHandle }) => {
+  index: number;
+}> = ({ product, color, index, isLast, clickHandle }) => {
   // Memoized className for the row
   const rowClass = useMemo(() => {
     const baseClass =
@@ -25,7 +27,11 @@ const ProductRow: FC<{
 
   // render products table
   return (
-    <tr className={rowClass} onClick={() => clickHandle(product)}>
+    <TableRowAnimations
+      className={rowClass}
+      onClick={() => clickHandle(product)}
+      index={index}
+    >
       <td className="w-[200px] py-1.5 pr-5 align-middle text-lg text-neutral-600 group-hover:text-fuchsia-500">
         <ProductTitle product={product} />
       </td>
@@ -40,7 +46,7 @@ const ProductRow: FC<{
       >
         <ProductPrice product={product} />
       </td>
-    </tr>
+    </TableRowAnimations>
   );
 };
 

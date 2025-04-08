@@ -24,6 +24,7 @@ const LogoutMenuItem: FC = () => {
       authenticate();
       router.push('/');
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Error logging out:', error);
     }
   };

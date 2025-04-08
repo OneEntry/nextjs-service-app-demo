@@ -1,46 +1,66 @@
-'use client';
-
+import dynamic from 'next/dynamic';
 import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import { type FC } from 'react';
 
-import { useGetFormByMarkerQuery } from '@/app/api';
+import { getAdminsInfo, getChildPagesByParentUrl } from '@/app/api';
 
-import Calendar from './booking-form/Calendar';
-import Masters from './booking-form/Masters';
-import Payment from './booking-form/Payment';
-import Products from './booking-form/Products';
-import Salons from './booking-form/Salons';
-import Services from './booking-form/Services';
-import SignIn from './booking-form/SignIn';
+const Salons = dynamic(() => import('./booking-form/Salons'), {
+  ssr: true,
+});
+const Services = dynamic(() => import('./booking-form/Services'), {
+  ssr: true,
+});
+const Products = dynamic(() => import('./booking-form/Products'), {
+  ssr: true,
+});
+const Masters = dynamic(() => import('./booking-form/Masters'), {
+  ssr: true,
+});
+const Calendar = dynamic(() => import('./booking-form/Calendar'), {
+  ssr: true,
+});
+const SignIn = dynamic(() => import('./booking-form/SignIn'), {
+  ssr: true,
+});
+const Payment = dynamic(() => import('./booking-form/Payment'), {
+  ssr: true,
+});
 
 interface BookingFormProps {
-  salons: IPagesEntity[];
-  services: IPagesEntity[];
-  masters: IAdminEntity[];
   dict: IAttributeValues;
 }
 
-const BookingForm: FC<BookingFormProps> = ({
-  salons,
-  services,
-  masters,
-  dict,
-}) => {
-  // Fetch form data by marker using RTK query
-  const { data } = useGetFormByMarkerQuery({
-    marker: 'order',
-  });
-  if (!data) return;
+/**
+ * BookingForm
+ *
+ * @param dict - dictionary from server api
+ * @returns
+ */
+const BookingForm: FC<BookingFormProps> = async ({ dict }) => {
+  // get salons
+  const { pages: salons } = await getChildPagesByParentUrl('salons');
+  // get services
+  const { pages: services } = await getChildPagesByParentUrl('services');
+  // get masters
+  const { admins } = await getAdminsInfo({ body: [], offset: 0, limit: 100 });
+  // filter masters
+  const masters = admins?.filter(
+    (master: IAdminEntity) => master.attributeValues?.master_name && master,
+  );
 
   return (
     <>
-      <Salons dict={dict} salons={salons} />
-      <Services dict={dict} services={services} salons={salons} />
-      <Products dict={dict} />
-      <Masters dict={dict} masters={masters} />
-      <Calendar dict={dict} formData={data} />
+      <Salons dict={dict} salons={salons as IPagesEntity[]} />
+      <Services
+        dict={dict}
+        services={services as IPagesEntity[]}
+        salons={salons as IPagesEntity[]}
+      />
+      <Products dict={dict} salons={salons} />
+      <Masters dict={dict} masters={masters as IAdminEntity[]} />
+      <Calendar dict={dict} />
       <SignIn dict={dict} />
       <Payment dict={dict} />
     </>

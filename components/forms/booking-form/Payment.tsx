@@ -10,7 +10,6 @@ import { AuthContext } from '@/app/store/providers/AuthContext';
 import {
   selectCartData,
   selectServiceId,
-  selectTabsState,
 } from '@/app/store/reducers/CartSlice';
 import {
   addData,
@@ -18,8 +17,9 @@ import {
   createOrder,
 } from '@/app/store/reducers/OrderSlice';
 import AuthError from '@/components/pages/AuthError';
-import Loader from '@/components/shared/Loader';
+import SpinnerLoader from '@/components/shared/SpinnerLoader';
 
+import DropdownAnimations from './animations/DropdownAnimations';
 import DropdownButton from './DropdownButton';
 import PaymentMethod from './payment/PaymentMethod';
 
@@ -34,7 +34,6 @@ const Payment: FC<{
   const tabKey = 'payment';
   const dispatch = useAppDispatch();
   const { isAuth } = useContext(AuthContext);
-  const tabsState = useAppSelector((state) => selectTabsState(tabKey, state));
 
   // serviceId
   const serviceId = useAppSelector(selectServiceId);
@@ -167,20 +166,26 @@ const Payment: FC<{
     return <AuthError dict={dict} />;
   }
 
-  // Loader
+  // SpinnerLoader
   if ((cartData.length < 1 && isLoading) || isLoading) {
-    return <Loader />;
+    return <SpinnerLoader />;
   }
 
   return (
     isAuth && (
-      <div className="mb-5 flex w-full flex-col gap-4">
+      <DropdownAnimations
+        id={tabKey}
+        className="mb-5 flex w-full flex-col gap-4"
+        index={6}
+        tabKey={tabKey}
+      >
         <DropdownButton title={'Payment'} tabKey={tabKey} />
-        {tabsState.isActive &&
-          whitelistMethods.map((item, index) => {
+        <div className="dropdown-container w-full">
+          {whitelistMethods.map((item, index) => {
             return <PaymentMethod key={index} account={item} dict={dict} />;
           })}
-      </div>
+        </div>
+      </DropdownAnimations>
     )
   );
 };

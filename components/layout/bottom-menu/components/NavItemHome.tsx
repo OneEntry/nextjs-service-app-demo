@@ -17,6 +17,7 @@ const NavItemHome: FC<{ item: IMenusPages }> = ({
   return (
     <Link
       href={'/'}
+      prefetch={false}
       title={localizeInfos.menuTitle}
       className="group relative box-border flex size-6 shrink-0 flex-col"
     >

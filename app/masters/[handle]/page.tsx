@@ -1,20 +1,25 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
-import type { FC } from 'react';
+import { Suspense } from 'react';
 
-import { getAdminsInfo, getPageById, getPageByUrl } from '@/app/api';
+import LineAnimations from '@/app/animations/LineAnimations';
+import { getPageByUrl } from '@/app/api';
 import { getDictionary } from '@/app/api/utils/dictionaries';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
 import MasterSingleLayout from '@/components/layout/master-single';
+import MasterLoader from '@/components/layout/master-single/components/MasterLoader';
 import PortfolioGridLayout from '@/components/layout/portfolio-grid';
+import PortfolioGridLoader from '@/components/layout/portfolio-grid/components/PortfolioGridLoader';
 import GradientLine from '@/components/shared/GradientLine';
 
 // export const revalidate = 10;
 // export const dynamicParams = true;
 
+type PageParams = Promise<{ handle: string }>;
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
 /**
  * Generate page metadata
+ *
  * @async server component
  * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  * @param params page params
@@ -25,7 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const { page, isError } = await getPageByUrl('masters');
 
   if (isError || !page) {
-    return notFound();
+    return {};
   }
 
   // extract data from page
@@ -45,43 +50,36 @@ export async function generateMetadata(): Promise<Metadata> {
  *
  * @param params
  * @param searchParams
- * @returns Master page
+ * @returns MasterPage
  */
-const MasterPageLayout: FC<{
-  params: { handle: string };
-  searchParams?: {
-    service?: number;
-  };
-}> = async ({ searchParams, params }) => {
+export default async function MasterPageLayout({
+  params,
+  searchParams,
+}: {
+  params: PageParams;
+  searchParams?: SearchParams;
+}) {
   const { handle } = await params;
   const searchData = await searchParams;
 
   // set dict
-  const [dict] = ServerProvider('dict', await getDictionary());
-
-  // masters
-  const { admins } = await getAdminsInfo({ offset: 0, limit: 100 });
-  const master = admins?.find(
-    (admin: IAdminEntity) => admin.id === Number(handle),
-  );
-
-  // if no data in searchParams get first master service id
-  const sId =
-    searchData?.service || master?.attributeValues.services.value[0].id;
-
-  const { page: service, isError } = await getPageById(sId as number);
-
-  if (!master || !service || isError) {
-    return;
-  }
+  ServerProvider('dict', await getDictionary());
 
   return (
     <>
       <GradientLine />
-      <MasterSingleLayout dict={dict} master={master} service={service} />
-      <PortfolioGridLayout master={master} service={service} />
+      <Suspense fallback={<MasterLoader />}>
+        <MasterSingleLayout handle={handle} searchData={searchData} />
+      </Suspense>
+      <div className="flex w-full flex-col justify-center">
+        <div className="mx-auto flex w-full flex-col">
+          <LineAnimations className="gradient-bg-line-20" delay={0.5} />
+          <Suspense fallback={<PortfolioGridLoader />}>
+            <PortfolioGridLayout handle={handle} searchData={searchData} />
+          </Suspense>
+        </div>
+      </div>
     </>
+    // <Loader />
   );
-};
-
-export default MasterPageLayout;
+}

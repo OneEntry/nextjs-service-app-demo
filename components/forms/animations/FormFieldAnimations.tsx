@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useGSAP } from '@gsap/react';
@@ -33,72 +32,72 @@ const FormFieldAnimations: FC<FormFieldAnimationsProps> = ({
   const { open, transition } = useContext(OpenDrawerContext);
   const ref = useRef(null);
 
-  // Form transition animations
-  // useGSAP(() => {
-  //   if (!ref.current) {
-  //     return;
-  //   }
+  // triggerTl
+  useGSAP(() => {
+    if (!ref.current) {
+      return;
+    }
 
-  //   gsap.set(ref.current, {
-  //     transformOrigin: '0 0',
-  //     overflow: 'hidden',
-  //   });
+    gsap.set(ref.current, {
+      transformOrigin: '0 0',
+      overflow: 'hidden',
+    });
 
-  //   const tl = gsap.timeline({
-  //     paused: true,
-  //   });
+    const triggerTl = gsap.timeline({
+      paused: true,
+    });
 
-  //   tl.fromTo(
-  //     ref.current,
-  //     {
-  //       width: 0,
-  //       opacity: 0,
-  //     },
-  //     {
-  //       width: '100%',
-  //       opacity: 1,
-  //       delay: index / 10 + 0.35,
-  //     },
-  //   );
-  //   tl.play();
+    triggerTl.fromTo(
+      ref.current,
+      {
+        width: 0,
+        opacity: 0,
+      },
+      {
+        width: '100%',
+        opacity: 1,
+        delay: index / 10 + 0.35,
+      },
+    );
+    triggerTl.play();
 
-  //   if (transition === 'close') {
-  //     tl.reverse(index / 10 + 0.65);
-  //   }
+    if (transition === 'close') {
+      triggerTl.reverse(index / 10 + 0.65);
+    }
 
-  //   return () => {
-  //     tl.kill();
-  //   };
-  // }, [transition, open]);
+    return () => {
+      triggerTl.kill();
+    };
+  }, [transition, open]);
 
-  // Form stage leaving animations
-  // useGSAP(() => {
-  //   const tl = gsap.timeline({
-  //     paused: true,
-  //   });
+  // stageTl
+  useGSAP(() => {
+    const stageTl = gsap.timeline({
+      paused: true,
+    });
 
-  //   tl.fromTo(
-  //     ref.current,
-  //     {
-  //       width: 0,
-  //       opacity: 0,
-  //     },
-  //     {
-  //       width: '100%',
-  //       opacity: 1,
-  //       delay: index / 10 + 0.35,
-  //     },
-  //   );
+    stageTl.fromTo(
+      ref.current,
+      {
+        width: 0,
+        opacity: 0,
+      },
+      {
+        width: '100%',
+        opacity: 1,
+        delay: index / 10 + 0.35,
+      },
+    );
 
-  //   if (stage === 'leaving' && prevStage === 'none') {
-  //     tl.reverse(1);
-  //   }
-  //   setPrevStage(stage);
+    if (stage === 'leaving' && prevStage === 'none') {
+      stageTl.reverse(1);
+    }
+    setPrevStage(stage);
 
-  //   return () => {
-  //     tl.kill();
-  //   };
-  // }, [stage]);
+    return () => {
+      stageTl.kill();
+    };
+  }, [stage]);
 
   return (
     <div ref={ref} className={className}>

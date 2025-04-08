@@ -3,7 +3,7 @@
 import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { CSSProperties, FC, HTMLAttributes } from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Carousel from 'react-simply-carousel';
 
 import NavigationButton from '@/components/shared/NavigationButton';
@@ -24,27 +24,7 @@ const MastersFeedCarousel: FC<MastersFeedCarouselProps> = ({
   dict,
 }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [slidesCount, setSlidesCount] = useState(6);
-  const [state, setState] = useState(false);
-
-  useEffect(() => {
-    const updateSlidesCount = () => {
-      const width = window.innerWidth;
-      if (width <= 768) {
-        setSlidesCount(3);
-      } else if (width <= 991) {
-        setSlidesCount(4);
-      } else if (width <= 1200) {
-        setSlidesCount(5);
-      } else {
-        setSlidesCount(6);
-      }
-    };
-
-    updateSlidesCount(); // Initial setup
-    window.addEventListener('resize', updateSlidesCount);
-    return () => window.removeEventListener('resize', updateSlidesCount);
-  }, []);
+  const [state, setState] = useState<boolean>(false);
 
   const containerProps: HTMLAttributes<HTMLDivElement> = {
     style: {
@@ -82,16 +62,30 @@ const MastersFeedCarousel: FC<MastersFeedCarouselProps> = ({
       }}
       activeSlideIndex={currentIndex}
       onRequestChange={setCurrentIndex}
-      itemsToShow={slidesCount}
+      itemsToShow={6}
       centerMode={true}
       speed={500}
-      autoplay={!state}
+      autoplay={state}
       autoplayDelay={2500}
       easing="ease-in-out"
-      preventScrollOnSwipe
+      // preventScrollOnSwipe={true}
+      responsiveProps={[
+        { minWidth: 1360, itemsToShow: 6 },
+        { minWidth: 1200, maxWidth: 1359, itemsToShow: 5 },
+        { minWidth: 992, maxWidth: 1199, itemsToShow: 4 },
+        { minWidth: 768, maxWidth: 992, itemsToShow: 3 },
+        { maxWidth: 767, itemsToShow: 3 },
+      ]}
     >
       {masters.map((master, index) => (
-        <FeedCard key={index} dict={dict} master={master} setState={setState} />
+        <FeedCard
+          key={index}
+          dict={dict}
+          master={master}
+          setState={setState}
+          index={index}
+          setCurrentIndex={setCurrentIndex}
+        />
       ))}
     </Carousel>
   );

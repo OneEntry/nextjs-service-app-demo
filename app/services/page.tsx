@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
   // get page by Url
   const { page, isError } = await getPageByUrl('services');
   if (isError || !page) {
-    return notFound();
+    return {};
   }
 
   // extract data from page
@@ -45,7 +45,7 @@ const ServicesPageLayout: FC = async () => {
   const { block } = await getBlockByMarker('home_catalog');
 
   if (!page || !block || isError) {
-    return 'isError';
+    return notFound();
   }
 
   return (

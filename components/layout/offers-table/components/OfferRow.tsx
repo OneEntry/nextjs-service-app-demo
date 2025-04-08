@@ -3,6 +3,7 @@
 import type { IProductEntity } from 'oneentry/dist/products/productsInterfaces';
 import { type FC, useMemo } from 'react';
 
+import TableRowAnimations from '../../products-table/animations/TableRowAnimations';
 import OfferBadge from './OfferBadge';
 import PriceDisplay from './PriceCell';
 import ServicesCell from './ServicesCell';
@@ -13,6 +14,7 @@ interface OfferRowProps {
   isLast: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleClick: any;
+  index: number;
 }
 
 const OfferRow: FC<OfferRowProps> = ({
@@ -20,6 +22,7 @@ const OfferRow: FC<OfferRowProps> = ({
   handleClick,
   isLast,
   color,
+  index,
 }) => {
   const cn = useMemo(() => {
     const baseClass =
@@ -30,7 +33,11 @@ const OfferRow: FC<OfferRowProps> = ({
   }, [isLast]);
 
   return (
-    <tr className={cn} onClick={() => handleClick(product)}>
+    <TableRowAnimations
+      className={cn}
+      onClick={() => handleClick(product)}
+      index={index}
+    >
       {/* services */}
       <td className="w-[200px] py-1.5 pr-5 align-middle">
         <ServicesCell product={product} color={color} />
@@ -43,7 +50,7 @@ const OfferRow: FC<OfferRowProps> = ({
       <td className="py-1.5 pl-5 text-right align-middle">
         <PriceDisplay product={product} color={color} />
       </td>
-    </tr>
+    </TableRowAnimations>
   );
 };
 

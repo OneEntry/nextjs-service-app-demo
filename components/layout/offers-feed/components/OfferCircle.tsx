@@ -1,12 +1,13 @@
-import Image from 'next/image';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { FC } from 'react';
+
+import StarLgIcon from '@/components/icons/star-lg';
 
 interface OfferCircleProps {
   item: {
     title1: string;
     title2: string;
-    icon: string;
+    icon: boolean;
   };
   dict: IAttributeValues;
 }
@@ -16,23 +17,14 @@ interface OfferCircleProps {
  *
  * @returns React component
  */
-const OfferCircle: FC<OfferCircleProps> = ({ item, dict }) => {
+const OfferCircle: FC<OfferCircleProps> = ({ item }) => {
   const { title1, title2, icon } = item;
-  const altText = dict.select_txt?.value || 'Icon';
 
   return (
-    <div className="offer-circle">
+    <div className="-mt-24 mb-5 size-[260px] justify-center rounded-full bg-gray-700 px-10 pb-10 pt-32 text-xl leading-8 transition-transform duration-500 group-hover:scale-110">
       <span className="whitespace-nowrap text-xl">{title1}</span> +{' '}
       <span className="whitespace-nowrap text-xl">{title2}</span>
-      {icon && (
-        <Image
-          width={32}
-          height={32}
-          src={icon}
-          alt={altText}
-          className="mx-auto mt-3.5 size-8 w-14 self-center"
-        />
-      )}
+      {icon && <StarLgIcon />}
     </div>
   );
 };

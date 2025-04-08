@@ -1,13 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { FC } from 'react';
 
+import DropdownAnimations from './animations/DropdownAnimations';
 import DropdownButton from './DropdownButton';
 import ProductsList from './products/ProductsList';
 
 interface ProductsProps {
   dict: IAttributeValues;
+  salons: any;
 }
 
 /**
@@ -15,18 +18,22 @@ interface ProductsProps {
  * @param dict dictionary from server api
  * @returns JSX.Element
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const Products: FC<ProductsProps> = ({ dict }) => {
+const Products: FC<ProductsProps> = ({ dict, salons }) => {
   const tabKey = 'products';
 
-  // !!! Safely extract text value with optional chaining and provide a default
-  const selectServiceText = 'Select Product';
+  // Safely extract text value with optional chaining and provide a default
+  const selectServiceText = dict.select_product?.value || 'Select Product';
 
   return (
-    <div id={tabKey} className="mb-4 flex w-full flex-col items-center">
+    <DropdownAnimations
+      id={tabKey}
+      className="mb-4 flex w-full flex-col items-center"
+      index={2}
+      tabKey={tabKey}
+    >
       <DropdownButton title={selectServiceText} tabKey={tabKey} />
-      <ProductsList tabKey={tabKey} />
-    </div>
+      <ProductsList tabKey={tabKey} salons={salons} />
+    </DropdownAnimations>
   );
 };
 

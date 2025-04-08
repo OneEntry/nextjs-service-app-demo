@@ -16,7 +16,7 @@ const MasterDescription: FC<MasterDescriptionProps> = ({ master }) => {
     master.attributeValues.master_description?.value?.[0]?.htmlValue;
 
   return (
-    <div className="mb-10 text-lg leading-6 tracking-wide text-neutral-600 max-md:max-w-full max-sm:text-base">
+    <div className="item mb-10 text-lg leading-6 tracking-wide text-neutral-600 max-md:max-w-full max-sm:text-base">
       {descriptionHtml ? parse(descriptionHtml) : null}
     </div>
   );

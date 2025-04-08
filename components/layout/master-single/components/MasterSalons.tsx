@@ -16,18 +16,18 @@ interface MasterSalonsProps {
  * @returns JSX.Element representing the MasterSalons component.
  */
 const MasterSalons: FC<MasterSalonsProps> = ({ salons }) => {
-  return (
-    <div className="flex flex-wrap justify-between gap-2.5 px-4 text-xl leading-8 text-neutral-600">
-      {salons?.value.map((salon, index) => (
-        <address key={index} className="flex gap-3.5 not-italic max-sm:gap-2.5">
-          <LocationIcon size={5} />
-          <span className="my-auto flex-auto leading-5 text-gray-700">
-            {salon.title}
-          </span>
-        </address>
-      ))}
-    </div>
-  );
+  if (!salons) {
+    return null;
+  }
+
+  return salons.value.map((salon, index) => (
+    <address key={index} className="flex gap-3.5 not-italic max-sm:gap-2.5">
+      <LocationIcon size={5} />
+      <span className="my-auto flex-auto leading-5 text-gray-700">
+        {salon.title}
+      </span>
+    </address>
+  ));
 };
 
 export default MasterSalons;

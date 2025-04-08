@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
   addServiceToCart,
   selectServiceId,
+  setTabsState,
 } from '@/app/store/reducers/CartSlice';
 
 interface BookingButtonProps {
@@ -44,6 +45,8 @@ const BookingButton: FC<BookingButtonProps> = ({ service, master, dict }) => {
           product: {} as IProductEntity,
         }),
       );
+      dispatch(setTabsState({ key: 'services', value: true }));
+      dispatch(setTabsState({ key: 'masters', value: true }));
       router.push('/booking');
     }
   };
@@ -51,7 +54,7 @@ const BookingButton: FC<BookingButtonProps> = ({ service, master, dict }) => {
   return (
     <button
       onClick={onApplyHandle}
-      className="btn-o btn-o-primary btn-o-md self-start uppercase"
+      className="item h-[50px] items-center justify-center self-start rounded-3xl border border-solid border-fuchsia-500 bg-transparent px-8 py-1 text-[17px] font-bold uppercase tracking-wide text-fuchsia-500 transition-colors duration-300 hover:border-fuchsia-600 hover:text-fuchsia-600 focus-visible:text-fuchsia-600 focus-visible:outline-fuchsia-600 disabled:border-neutral-300 disabled:text-neutral-300"
     >
       {book_online_text?.value || 'BOOK ONLINE'}
     </button>

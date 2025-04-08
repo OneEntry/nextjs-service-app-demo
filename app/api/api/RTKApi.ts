@@ -25,6 +25,7 @@ import type { IUserEntity } from 'oneentry/dist/users/usersInterfaces';
 
 import { typeError } from '@/components/utils';
 
+import { updateUserState } from '../server/users/updateUserState';
 import { api } from './api';
 
 interface BlockByMarkerProps {
@@ -44,6 +45,17 @@ interface SingleOrderProps {
 export const RTKApi = createApi({
   reducerPath: 'api',
   baseQuery: fakeBaseQuery(),
+  keepUnusedDataFor: 300, // 5 минут по умолчанию
+  tagTypes: [
+    'Products',
+    'Pages',
+    'Blocks',
+    'Forms',
+    'Orders',
+    'User',
+    'Accounts',
+    'Sessions',
+  ],
   endpoints: (build) => ({
     /**
      * Get all blocks by page url.
@@ -57,19 +69,23 @@ export const RTKApi = createApi({
         }
         return { data: result as IPositionBlock[] };
       },
+      providesTags: ['Blocks'],
+      keepUnusedDataFor: 600, // 10 минут для блоков
     }),
     /**
-     * Get Products By PageUrl
+     * Get Products with filter
      * @property {IProductEntity[]} item - IProductEntity.
      */
-    getProducts: build.query({
-      queryFn: async () => {
-        const result = await api.Products.getProducts([]);
+    getProducts: build.query<IProductsResponse, { body: [] }>({
+      queryFn: async ({ body }) => {
+        const result = await api.Products.getProducts(body);
         if (typeError(result)) {
           return { error: result };
         }
         return { data: result as IProductsResponse };
       },
+      providesTags: ['Products'],
+      keepUnusedDataFor: 300, // 5 минут для продуктов
     }),
     /**
      * Get Products By PageUrl
@@ -86,6 +102,8 @@ export const RTKApi = createApi({
         }
         return { data: result as IProductsResponse };
       },
+      providesTags: ['Products'],
+      keepUnusedDataFor: 300, // 5 минут для продуктов по URL
     }),
     /**
      * Get Products By Ids.
@@ -119,6 +137,8 @@ export const RTKApi = createApi({
         }
         return { data: result };
       },
+      providesTags: ['Products'],
+      keepUnusedDataFor: 300, // 5 минут для продуктов по ID
     }),
     /**
      * Get Product By Id.
@@ -135,6 +155,8 @@ export const RTKApi = createApi({
         }
         return { data: result as IProductEntity };
       },
+      providesTags: ['Products'],
+      keepUnusedDataFor: 300, // 5 минут для отдельного продукта
     }),
     /**
      * Get Page By Id.
@@ -146,11 +168,14 @@ export const RTKApi = createApi({
           return { error: null };
         }
         const result = await api.Pages.getPageById(id);
+
         if (typeError(result)) {
           return { error: result };
         }
         return { data: result as IPagesEntity };
       },
+      providesTags: ['Pages'],
+      keepUnusedDataFor: 600, // 10 минут для страниц
     }),
     /**
      * Get block by Marker.
@@ -164,6 +189,8 @@ export const RTKApi = createApi({
         }
         return { data: result as IBlockEntity };
       },
+      providesTags: ['Blocks'],
+      keepUnusedDataFor: 600, // 10 минут для блоков
     }),
     /**
      * Get all auth providers objects.
@@ -176,12 +203,12 @@ export const RTKApi = createApi({
         }
         return { data: result as IAuthProvidersEntity[] };
       },
+      keepUnusedDataFor: 3600, // 1 час для провайдеров авторизации
     }),
     /**
      * Get form by marker.
      * @property {string} marker - Marker of form.
      */
-    // eslint-disable-next-line prettier/prettier
     getFormByMarker: build.query<IFormsEntity, { marker: string }>({
       queryFn: async ({ marker }) => {
         const result = await api.Forms.getFormByMarker(marker);
@@ -190,6 +217,8 @@ export const RTKApi = createApi({
         }
         return { data: result as IFormsEntity };
       },
+      providesTags: ['Forms'],
+      keepUnusedDataFor: 600, // 10 минут для форм
     }),
     /**
      * Getting the data of an authorized user.
@@ -202,6 +231,8 @@ export const RTKApi = createApi({
         }
         return { data: result as IUserEntity };
       },
+      providesTags: ['User'],
+      keepUnusedDataFor: 60, // 1 минута для данных пользователя
     }),
     /**
      * Get all payment accounts as an array.
@@ -214,6 +245,8 @@ export const RTKApi = createApi({
         }
         return { data: result as IAccountsEntity[] };
       },
+      providesTags: ['Accounts'],
+      keepUnusedDataFor: 300, // 5 минут для аккаунтов
     }),
     /**
      * Retrieve one order storage object by marker.
@@ -227,6 +260,8 @@ export const RTKApi = createApi({
         }
         return { data: result as IOrdersEntity };
       },
+      providesTags: ['Orders'],
+      keepUnusedDataFor: 60, // 1 минута для заказов
     }),
     /**
      * Get a single payment session object by its identifier.
@@ -240,6 +275,8 @@ export const RTKApi = createApi({
         }
         return { data: result as ISessionEntity };
       },
+      providesTags: ['Sessions'],
+      keepUnusedDataFor: 60, // 1 минута для сессий
     }),
     /**
      * Getting a single order from the order storage object created by the user
@@ -254,6 +291,8 @@ export const RTKApi = createApi({
         }
         return { data: result as IOrderByMarkerEntity };
       },
+      providesTags: ['Orders'],
+      keepUnusedDataFor: 60, // 1 минута для отдельных заказов
     }),
     /**
      * Update a single order from the order storage object created by the user
@@ -273,6 +312,38 @@ export const RTKApi = createApi({
         }
         return { data: result as IBaseOrdersEntity };
       },
+      providesTags: ['Orders'],
+      keepUnusedDataFor: 60, // 1 минута для обновленных заказов
+    }),
+    /**
+     * Update user state
+     */
+    updateUserState: build.mutation<boolean, { cart: object; user: any }>({
+      queryFn: async ({ cart, user }) => {
+        const result = await updateUserState({ cart, user });
+        if (result === undefined) {
+          return { data: false };
+        }
+        return { data: result };
+      },
+      invalidatesTags: ['User'],
+    }),
+    /**
+     * Update order
+     */
+    updateOrder: build.mutation<IBaseOrdersEntity, SingleOrderProps>({
+      queryFn: async ({ id, marker, body }) => {
+        const result = await api.Orders.updateOrderByMarkerAndId(
+          marker,
+          id,
+          body,
+        );
+        if (typeError(result)) {
+          return { error: result };
+        }
+        return { data: result as IBaseOrdersEntity };
+      },
+      invalidatesTags: ['Orders'],
     }),
   }),
 });
@@ -294,4 +365,6 @@ export const {
   useGetProductsByPageUrlQuery,
   useGetProductsByIdsQuery,
   useUpdateOrderByMarkerAndIdQuery,
+  useUpdateUserStateMutation,
+  useUpdateOrderMutation,
 } = RTKApi;

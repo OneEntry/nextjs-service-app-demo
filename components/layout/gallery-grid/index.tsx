@@ -1,52 +1,55 @@
-'use client';
-
-import 'photoswipe/dist/photoswipe.css';
-
+import { notFound } from 'next/navigation';
 import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
 import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
-import { type FC, useEffect, useState } from 'react';
-import { Gallery } from 'react-photoswipe-gallery';
+import type { FC } from 'react';
 
-import { shuffleArray } from '@/components/utils';
+import {
+  getAdminsInfo,
+  getChildPagesByParentUrl,
+  getPageByUrl,
+} from '@/app/api';
+import getLqipPreview from '@/components/hooks/getLqipPreview';
 
-import GalleryCard from './components/GalleryCard';
-
-interface PhotoDataProps {
-  name: string;
-  link: string;
-  img: string;
-  thumb: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  spec: any;
-}
+import GalleryGrid from './components/GalleryGrid';
 
 interface GalleryGridProps {
+  handle: string;
   dict: IAttributeValues;
-  page: IPagesEntity;
-  data: {
-    masterId: string;
-    photos: {
-      previewLink: string;
-      downloadLink: string;
-    }[];
-  }[];
-  masters?: IAdminEntity[];
 }
 
 /**
- * GalleryGrid section
- * @returns React component
+ * Gallery section
+ * @returns GalleryGrid
  */
-const GalleryGrid: FC<GalleryGridProps> = ({ page, data, masters, dict }) => {
-  const [galleryCards, setGalleryCards] = useState<Array<PhotoDataProps>>();
+const Gallery: FC<GalleryGridProps> = async ({ handle, dict }) => {
+  const { page, isError } = await getPageByUrl(handle);
+  const { pages: childPages } = await getChildPagesByParentUrl(handle);
+  const { admins } = await getAdminsInfo({ body: [], offset: 0, limit: 100 });
 
-  // setGalleryCards
-  useEffect(() => {
-    const cardsData = data.flatMap((gallery) => {
+  const masters = admins?.filter(
+    (master: IAdminEntity) => master.attributeValues?.master_name && master,
+  );
+
+  if (!childPages || !masters || !page || isError) {
+    return notFound();
+  }
+
+  const data =
+    childPages.map((page: IPagesEntity) => {
+      return {
+        masterId: page?.attributeValues?.master_id.value?.[0]?.value,
+        photos: page?.attributeValues?.gallery_photos?.value,
+      };
+    }) || [];
+
+  const cardsData = await Promise.all(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data.flatMap(async (gallery: { masterId: number; photos: any[] }) => {
       const master = masters?.find((m) => m.id === Number(gallery.masterId));
-      if (!master) return [];
-      console.log(gallery);
+      if (!master) {
+        return [];
+      }
 
       const spec = page.attributeValues?.gallery_category?.value[0];
       const masterName = master.attributeValues?.master_name?.value || '';
@@ -56,32 +59,27 @@ const GalleryGrid: FC<GalleryGridProps> = ({ page, data, masters, dict }) => {
         link += '?service=' + spec.id;
       }
 
-      return gallery.photos.map((imgSrc) => ({
-        name: masterName,
-        link,
-        img: imgSrc.downloadLink,
-        thumb: imgSrc.previewLink || imgSrc.downloadLink,
-        spec,
-      }));
-    });
-
-    setGalleryCards(shuffleArray(cardsData.flat()));
-  }, [data, masters, page]);
+      // Map through photos and create card data with LQIP previews
+      return await Promise.all(
+        gallery.photos.map(async (imgSrc) => ({
+          name: masterName,
+          link,
+          img: imgSrc.downloadLink,
+          thumb: imgSrc.previewLink || imgSrc.downloadLink,
+          preview: await getLqipPreview(
+            imgSrc.previewLink || imgSrc.downloadLink,
+          ),
+          spec,
+        })),
+      );
+    }),
+  );
 
   return (
-    <section className="flex w-full flex-col justify-center">
-      <div className="mx-auto flex w-full flex-col">
-        <div className="gradient-bg-line-20" />
-        <div className="grid w-full grid-cols-6 gap-0 max-2xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2">
-          <Gallery>
-            {galleryCards?.map((cardData, index) => (
-              <GalleryCard key={index} dict={dict} cardData={cardData} />
-            ))}
-          </Gallery>
-        </div>
-      </div>
-    </section>
+    <div className="grid w-full grid-cols-6 gap-0 max-2xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-sm:grid-cols-2">
+      <GalleryGrid dict={dict} cardsData={cardsData.flat()} />
+    </div>
   );
 };
 
-export default GalleryGrid;
+export default Gallery;

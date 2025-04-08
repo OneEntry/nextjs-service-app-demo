@@ -25,6 +25,7 @@ export { getSingleAttributeByMarkerSet } from './server/attributes/getSingleAttr
 export { getBlockByMarker } from './server/blocks/getBlockByMarker';
 export { getBlocks } from './server/blocks/getBlocks';
 export { getBlocksByPageUrl } from './server/blocks/getBlocksByPageUrl';
+export { getFormByMarker } from './server/forms/getFormByMarker';
 export { getMenuByMarker } from './server/menus/getMenuByMarker';
 export { getAllOrdersByMarker } from './server/orders/getAllOrdersByMarker';
 export { updateOrderByMarkerAndId } from './server/orders/updateOrderByMarkerAndId';

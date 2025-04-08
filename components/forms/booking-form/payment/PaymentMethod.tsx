@@ -96,7 +96,7 @@ const PaymentMethod: FC<{
 
   return (
     <div
-      className={`relative w-full flex-row items-center justify-between overflow-hidden rounded-3xl border border-solid bg-white p-4 text-slate-700 ${
+      className={`relative mb-4 w-full flex-row items-center justify-between overflow-hidden rounded-3xl border border-solid bg-white p-4 text-slate-700 ${
         isActive ? 'min-h-16' : 'min-h-8 cursor-pointer'
       }`}
       onClick={() =>
@@ -111,7 +111,7 @@ const PaymentMethod: FC<{
         </p>
         <button
           onClick={handleTogglePaymentMethod}
-          className="absolute bottom-4 right-4 size-6 rounded-full bg-slate-50 text-center"
+          className="absolute bottom-4 right-4 size-6 rounded-full bg-slate-100 text-center"
         >
           {isActive ? '-' : '+'}
         </button>

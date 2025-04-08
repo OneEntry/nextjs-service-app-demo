@@ -14,7 +14,7 @@ import { AuthContext } from '@/app/store/providers/AuthContext';
 import type { FormProps } from '@/app/types/global';
 
 import AuthError from '../pages/AuthError';
-import Loader from '../shared/Loader';
+import SpinnerLoader from '../shared/SpinnerLoader';
 import ErrorMessage from './inputs/ErrorMessage';
 import FormInput from './inputs/FormInput';
 import SubmitButton from './inputs/FormSubmitButton';
@@ -96,7 +96,7 @@ const UserForm: FC<FormProps> = ({ dict }) => {
   );
 
   if (isLoading) {
-    return <Loader />;
+    return <SpinnerLoader />;
   }
 
   if (!isAuth || error || !user?.formData) {

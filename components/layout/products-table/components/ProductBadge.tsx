@@ -24,7 +24,7 @@ const ProductBadge: FC<ProductBadgeProps> = ({
   return (
     <div
       className={
-        'size-10 justify-center self-center rounded-full text-center text-xs font-medium leading-3 px-1 py-2 text-white bg-' +
+        'size-11 justify-center self-center rounded-full text-center text-xs font-medium leading-3 px-1 py-2.5 text-white bg-' +
         color
       }
     >

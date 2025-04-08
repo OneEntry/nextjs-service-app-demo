@@ -1,17 +1,19 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import type { FC } from 'react';
 
 import { getPageByUrl } from '@/app/api';
+import { getDictionary } from '@/app/api/utils/dictionaries';
 import { ServerProvider } from '@/app/store/providers/ServerProvider';
-import type { PageProps } from '@/app/types/global';
 import PaymentCanceled from '@/components/pages/PaymentCanceled';
 import PaymentSuccess from '@/components/pages/PaymentSuccess';
 
-import { getDictionary } from '../api/utils/dictionaries';
+type PageProps = Promise<{
+  handle: string;
+}>;
 
 /**
  * Generate page metadata
+ *
  * @async server component
  * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  * @param params page params
@@ -20,23 +22,22 @@ import { getDictionary } from '../api/utils/dictionaries';
 export async function generateMetadata({
   params,
 }: {
-  params: { handle: string };
+  params: PageProps;
 }): Promise<Metadata> {
   const { handle } = await params;
 
-  // get page by Url
+  // Fetch page data based on the URL handle
   const { page, isError } = await getPageByUrl(handle);
 
   if (isError || !page) {
-    return notFound();
+    return {}; // Return default metadata or handle not found appropriately
   }
 
-  // extract data from page
   const { localizeInfos } = page;
 
   return {
-    title: localizeInfos?.title,
-    description: localizeInfos?.title,
+    title: localizeInfos?.title || 'Default Title',
+    description: localizeInfos?.description || 'Default Description',
     openGraph: {
       type: 'article',
     },
@@ -44,13 +45,14 @@ export async function generateMetadata({
 }
 
 /**
- * Simple page
+ * Simple page layout
+ *
  * @async server component
  * @see {@link https://nextjs.org/docs/app/api-reference/file-conventions/page Next.js docs}
  * @param params page params
  * @returns page layout JSX.Element
  */
-const PageLayout: FC<PageProps> = async ({ params }) => {
+export default async function PageLayout({ params }: { params: PageProps }) {
   const { handle } = await params;
   const [dict] = ServerProvider('dict', await getDictionary());
 
@@ -80,13 +82,11 @@ const PageLayout: FC<PageProps> = async ({ params }) => {
   return (
     <div className="mx-auto flex min-h-80 w-full max-w-screen-2xl flex-col overflow-hidden">
       {pages.map((p, i) => {
-        if (pageUrl !== p.name) {
-          return;
+        if (pageUrl === p.name) {
+          return <div key={i}>{p.component}</div>;
         }
-        return <div key={i}>{p.component}</div>;
+        return null;
       })}
     </div>
   );
-};
-
-export default PageLayout;
+}

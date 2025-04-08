@@ -4,6 +4,7 @@ import type { IAttributeValues } from 'oneentry/dist/base/utils';
 import type { IPagesEntity } from 'oneentry/dist/pages/pagesInterfaces';
 import { type FC } from 'react';
 
+import DropdownAnimations from './animations/DropdownAnimations';
 import DropdownButton from './DropdownButton';
 import SalonsList from './salons/SalonsList';
 
@@ -24,10 +25,15 @@ const Salons: FC<SalonsProps> = ({ dict, salons }) => {
   const selectSalonText = dict.select_salon_text?.value || 'Select Salon';
 
   return (
-    <div id={tabKey} className="mb-4 flex w-full flex-col items-center">
+    <DropdownAnimations
+      id={tabKey}
+      index={0}
+      className="mb-4 flex w-full flex-col items-center"
+      tabKey={tabKey}
+    >
       <DropdownButton title={selectSalonText} tabKey={tabKey} />
       <SalonsList salons={salons} tabKey={tabKey} />
-    </div>
+    </DropdownAnimations>
   );
 };
 

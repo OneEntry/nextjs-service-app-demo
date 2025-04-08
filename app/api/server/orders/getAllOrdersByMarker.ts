@@ -6,8 +6,8 @@ import { typeError } from '@/components/utils';
 
 interface HandleProps {
   marker: string;
-  limit: number;
   offset: number;
+  limit: number;
 }
 /**
  * Getting all orders from the orders storage object created by the user
@@ -23,8 +23,8 @@ interface HandleProps {
  */
 export const getAllOrdersByMarker = async ({
   marker,
-  limit,
   offset,
+  limit,
 }: HandleProps): Promise<{
   isError: boolean;
   error?: IError;
@@ -35,8 +35,8 @@ export const getAllOrdersByMarker = async ({
     const data = await api.Orders.getAllOrdersByMarker(
       marker,
       'en_US',
-      limit,
       offset,
+      limit,
     );
 
     if (typeError(data)) {

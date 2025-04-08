@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
   addServiceToCart,
   selectServiceId,
+  setTabsState,
 } from '@/app/store/reducers/CartSlice';
 import ReviewsIcon from '@/components/icons/reviews';
 import StarOpenIconLg from '@/components/icons/star-o-lg';
@@ -45,13 +46,17 @@ const RepeatOrder: FC<RepeatOrderProps> = ({ dict, orderData, master }) => {
         master,
       }),
     );
+    dispatch(setTabsState({ key: 'salons', value: true }));
+    dispatch(setTabsState({ key: 'services', value: true }));
+    dispatch(setTabsState({ key: 'products', value: true }));
+    dispatch(setTabsState({ key: 'masters', value: true }));
     router.push('/booking');
   };
 
   return (
     <div className="my-auto flex w-full flex-col text-base font-bold tracking-wide text-fuchsia-500">
       <button
-        className="btn-o btn-o-primary btn-o-sm mb-2"
+        className="mb-2 h-[40px] min-w-20 items-center justify-center rounded-3xl border border-solid border-fuchsia-500 bg-transparent p-1 text-base font-bold leading-6 tracking-wide text-fuchsia-500 transition-colors duration-300 hover:border-fuchsia-600 hover:text-fuchsia-600 focus-visible:text-fuchsia-600 focus-visible:outline-fuchsia-600 disabled:border-neutral-300 disabled:text-neutral-300"
         onClick={repeatOrderHandle}
       >
         {book_again_text?.value || 'Book again'}

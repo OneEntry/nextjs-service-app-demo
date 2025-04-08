@@ -1,4 +1,3 @@
-/* eslint-disable tailwindcss/no-custom-classname */
 import Image from 'next/image';
 import type { IAdminEntity } from 'oneentry/dist/admins/adminsInterfaces';
 import type { FC } from 'react';
